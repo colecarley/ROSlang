@@ -19,6 +19,14 @@ struct UnaryExpr;
 struct CallExpr;
 struct LiteralExpr;
 struct IdentifierExpr;
+struct ArrayExpr;
+struct TreeNode;
+struct AndNode;
+struct OrNode;
+struct ThenNode;
+struct BehaviorNode;
+struct DefaultInput;
+struct Input;
 
 struct Visitor
 {
@@ -41,4 +49,12 @@ struct Visitor
     virtual void visit(CallExpr *) = 0;
     virtual void visit(LiteralExpr *) = 0;
     virtual void visit(IdentifierExpr *) = 0;
+    virtual void visit(ArrayExpr *) = 0;
+    virtual void visit(TreeNode *) = 0;
+    virtual void visit(AndNode *) = 0;
+    virtual void visit(OrNode *) = 0;
+    virtual void visit(ThenNode *) = 0;
+    virtual void visit(BehaviorNode *) = 0;
+    virtual void visit(DefaultInput *) = 0;
+    virtual void visit(Input *) = 0;
 };

@@ -23,6 +23,14 @@ struct UnaryExpr;
 struct CallExpr;
 struct LiteralExpr;
 struct IdentifierExpr;
+struct ArrayExpr;
+struct TreeNode;
+struct AndNode;
+struct OrNode;
+struct ThenNode;
+struct BehaviorNode;
+struct DefaultInput;
+struct Input;
 
 struct ASTNode
 {
