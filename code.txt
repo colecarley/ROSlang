@@ -1,0 +1,77 @@
+
+# inputs to the file
+
+input x: int = 3
+input y: int = 7
+input destinations: string[] = ["home", "depot"]
+
+# functions
+fun createNewNode(destination: int) -> Node:
+	let foobar = 3
+	let shoebar = 4
+	
+	if len(destination) > 3:
+		return MoveBehavior(activation_potential=y + foobar, dest=destination)
+	else:
+		return MoveBehavior(activation_potential=y + shoebar, dest=destination)
+  
+
+fun getNumber(num: int) -> int:
+	return num > 3 ? 3 else num
+
+# must be the last thing
+export:
+@if x > y:
+	THEN:
+		THEN:
+			# children
+		MoveBehavior(activation_potential=x, dest=destinations[0])
+		PickAndPlace(activation_potential=x, object="any")
+		MoveBehavior(activation_potential=x, dest=destinations[1])
+		PlaceBehavior(activation_potential=x)
+		loadNode("foobar", activation_potential=12, dest="foobar")
+	OR:
+		thisThatThis(activation_potential=12, dest="foobar")
+@else:
+	AND:
+		@for destination in destinations:
+			createNewNode(destination) # these get added in the order that they are executed
+		MoveBehavior(activation_potential=y, dest=destinations[0])
+		PickAndPlace(activation_potential=y, object="any")
+		MoveBehavior(activation_potential=y, dest"depot_5")
+		PlaceBehavior(activation_potential=y)
+		loadNode("foobar", x = 89)
+	OR:
+		thisThatThis(activation_potential=12, dest="foobar")
+
+# every file should be a tree with NO ROOT
+# there should be static typing
+# plug-ins should be treated as functions that are passed parameters
+# the files shoul dbe read top down
+
+# types:
+	# int
+	# float
+	# string
+	# bool
+	# T[]
+	# Node
+	# BehaviorNode
+	# ORNode
+	# AndNode
+	# ThenNode
+
+# operations:
+	# +, -, /, *, **, %
+
+# statements
+	# return
+	# for
+	# if else
+	# export
+	# input
+	# fun
+	# let
+	# @if
+	# @else
+	# @for

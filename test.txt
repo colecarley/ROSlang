@@ -1,0 +1,50 @@
+1 + 1
+    1 + 1
+        1 + 1
+        a = 2
+        let b: int = 3
+        let c: float = true ? 1 : 3
+
+        fun foobar() -> int:
+            1 + 1
+            return
+
+
+fun foobar() -> string:
+    1 + 1
+    return 3
+
+if true:
+    1 + 1
+else:
+    2 + 2
+
+for x in foobar:
+    x
+    break
+
+while true:
+    continue
+
+let x: int[] = [1,2,3,4]
+
+AND:
+    behavior()
+    THEN:
+        behavior()
+        behavior()
+        behavior()
+        behavior()
+    OR:
+        behavior()
+
+    @if x < 3:
+        OR:
+            behavior()
+            behavior()
+    @else:
+        THEN:
+            behavior()
+            behavior()
+    @for x in y:
+        behavior()
