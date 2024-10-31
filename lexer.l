@@ -12,9 +12,13 @@ int open_count = 0;
 %}
 
 %x leading_tab
+%x comment
 %s normal
 
 %%
+
+<comment>"\n" { current_line_indent = 0; BEGIN(leading_tab); return NEW_LINE; }
+<comment>. {/* ignore comments */}
 
 <leading_tab>\n { current_line_indent = 0; }
 <leading_tab>" "{4} { current_line_indent++; }
@@ -41,6 +45,8 @@ int open_count = 0;
 
 <normal>"\n" { current_line_indent = 0; BEGIN(leading_tab); 
                 return NEW_LINE; }
+
+"#" { BEGIN(comment); }
 
 [0-9]+      { yylval.intval = atoi(yytext); 
                 return INT_LITERAL; }

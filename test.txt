@@ -1,3 +1,6 @@
+# i am here
+    # i am here indent
+
 1 + 1
     1 + 1
         1 + 1
@@ -11,7 +14,7 @@
 
 
 fun foobar() -> string:
-    1 + 1
+    1 + 1 # comment
     return 3
 
 if true:
