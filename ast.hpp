@@ -45,6 +45,14 @@ struct Stmt : ASTNode
     }
 };
 
+struct TreeNode : ASTNode
+{
+    virtual void accept(Visitor *v) override
+    {
+        v->visit(this);
+    }
+};
+
 struct IfStmt : Stmt
 {
     Expr *condition;
@@ -216,4 +224,80 @@ struct IdentifierExpr : Expr
     std::string identifier;
 
     IdentifierExpr(std::string identifier) : identifier(identifier) {}
+};
+
+struct AndNode : TreeNode
+{
+    std::vector<TreeNode *> children;
+
+    AndNode(std::vector<TreeNode *> children) : children(children) {}
+};
+
+struct OrNode : TreeNode
+{
+    std::vector<TreeNode *> children;
+
+    OrNode(std::vector<TreeNode *> children) : children(children) {}
+};
+
+struct ThenNode : TreeNode
+{
+    std::vector<TreeNode *> children;
+
+    ThenNode(std::vector<TreeNode *> children) : children(children) {}
+};
+
+struct BehaviorNode : TreeNode
+{
+    std::string identifier;
+    std::vector<Expr *> args;
+
+    BehaviorNode(std::string identifier, std::vector<Expr *> args) : identifier(identifier), args(args) {}
+};
+
+struct PseudoNode : TreeNode
+{
+};
+
+struct AtIfNode : PseudoNode
+{
+    Expr *condition;
+    std::vector<TreeNode *> children;
+
+    AtIfNode(Expr *condition, std::vector<TreeNode *> children) : condition(condition), children(children) {}
+};
+
+struct AtIfElseNode : PseudoNode
+{
+    Expr *condition;
+    std::vector<TreeNode *> then_children;
+    std::vector<TreeNode *> else_children;
+
+    AtIfElseNode(Expr *condition, std::vector<TreeNode *> then_children, std::vector<TreeNode *> else_children) : condition(condition), then_children(then_children), else_children(else_children) {}
+};
+
+struct AtForNode : PseudoNode
+{
+    std::string identifier;
+    Expr *iterable;
+    std::vector<TreeNode *> children;
+
+    AtForNode(std::string identifier, Expr *iterable, std::vector<TreeNode *> children) : identifier(identifier), iterable(iterable), children(children) {}
+};
+
+struct InputDefault : ASTNode
+{
+    std::string identifier;
+    Type type;
+    Expr *value;
+
+    InputDefault(std::string identifier, Type type, Expr *value) : identifier(identifier), type(type), value(value) {}
+};
+
+struct Input : ASTNode
+{
+    std::string identifier;
+    Type type;
+
+    Input(std::string identifier, Type type) : identifier(identifier), type(type) {}
 };
