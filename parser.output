@@ -1,0 +1,2768 @@
+State 0 conflicts: 1 shift/reduce
+State 27 conflicts: 1 shift/reduce
+State 110 conflicts: 1 shift/reduce
+State 131 conflicts: 4 shift/reduce
+State 132 conflicts: 4 shift/reduce
+State 133 conflicts: 4 shift/reduce
+State 134 conflicts: 4 shift/reduce
+State 176 conflicts: 1 shift/reduce
+
+
+Grammar
+
+    0 $accept: program $end
+
+    1 program: input_list stmt_list tree
+
+    2 input_list: input_list input
+    3           | input
+    4           | /* empty */
+
+    5 input: INPUT IDENTIFIER COLON type EQUAL expr NEW_LINE
+    6      | INPUT IDENTIFIER COLON type NEW_LINE
+
+    7 tree: and_node
+    8     | or_node
+    9     | then_node
+   10     | behavior_node
+   11     | pseudo_node
+
+   12 and_node: AND COLON NEW_LINE children
+
+   13 or_node: OR COLON NEW_LINE children
+
+   14 then_node: THEN COLON NEW_LINE children
+
+   15 behavior_node: IDENTIFIER LPAREN arg_list RPAREN NEW_LINE
+
+   16 pseudo_node: at_if_stmt
+   17            | at_if_else_stmt
+   18            | at_for_stmt
+
+   19 at_if_stmt: AT_IF expr COLON NEW_LINE children
+
+   20 at_if_else_stmt: AT_IF expr COLON NEW_LINE children AT_ELSE COLON NEW_LINE children
+
+   21 at_for_stmt: AT_FOR IDENTIFIER IN IDENTIFIER COLON NEW_LINE children
+
+   22 children: INDENT node_list DEDENT
+   23         | INDENT node_list OUTDENT
+
+   24 node_list: tree
+   25          | tree node_list
+
+   26 stmt_list: stmt
+   27          | stmt stmt_list
+
+   28 stmt: block
+   29     | expr NEW_LINE
+   30     | var_decl NEW_LINE
+   31     | fn_decl
+   32     | return_stmt NEW_LINE
+   33     | break_stmt NEW_LINE
+   34     | continue_stmt NEW_LINE
+   35     | while_stmt
+   36     | if_stmt
+   37     | for_in_stmt
+   38     | NEW_LINE
+
+   39 for_in_stmt: FOR IDENTIFIER IN expr COLON NEW_LINE block
+
+   40 if_stmt: IF expr COLON NEW_LINE block
+   41        | IF expr COLON NEW_LINE block ELSE COLON NEW_LINE block
+
+   42 while_stmt: WHILE expr COLON NEW_LINE block
+
+   43 break_stmt: BREAK
+
+   44 continue_stmt: CONTINUE
+
+   45 fn_decl: FUN IDENTIFIER LPAREN param_list RPAREN TYPE_ARROW type COLON NEW_LINE block
+
+   46 param_list: IDENTIFIER COLON type
+   47           | IDENTIFIER COMMA type param_list
+   48           | /* empty */
+
+   49 return_stmt: RETURN expr
+   50            | RETURN
+
+   51 type: type_identifier
+   52     | type_identifier LBRACKET RBRACKET
+
+   53 type_identifier: INT
+   54                | FLOAT
+   55                | STRING
+   56                | BOOL
+   57                | VOID
+   58                | NONE
+
+   59 var_decl: LET IDENTIFIER COLON type EQUAL expr
+
+   60 block: INDENT stmt_list DEDENT
+   61      | INDENT stmt_list OUTDENT
+
+   62 expr: assignment
+
+   63 assignment: IDENTIFIER EQUAL expr
+   64           | ternary
+
+   65 ternary: expr QUESTION_MARK expr COLON expr
+   66        | or
+
+   67 or: or OR and
+   68   | and
+
+   69 and: and AND equality
+   70    | equality
+
+   71 equality: equality EQUAL_EQUAL comparison
+   72         | equality BANG_EQUAL comparison
+   73         | comparison
+
+   74 comparison: comparison GREATER comparison
+   75           | comparison LESS comparison
+   76           | comparison GREATER_EQUAL comparison
+   77           | comparison LESS_EQUAL comparison
+   78           | term
+
+   79 term: factor PLUS term
+   80     | factor MINUS term
+   81     | factor
+
+   82 factor: exponent STAR factor
+   83       | exponent SLASH factor
+   84       | exponent MOD factor
+   85       | exponent
+
+   86 exponent: unary STAR_STAR exponent
+   87         | unary
+
+   88 unary: MINUS unary
+   89      | BANG unary
+   90      | call
+
+   91 call: primary LPAREN arg_list RPAREN
+   92     | primary
+
+   93 arg_list: expr
+   94         | expr COMMA arg_list
+   95         | /* empty */
+
+   96 primary: INT_LITERAL
+   97        | FLOAT_LITERAL
+   98        | STRING_LITERAL
+   99        | BOOL_LITERAL
+  100        | IDENTIFIER
+  101        | array
+
+  102 array: LBRACKET arg_list RBRACKET
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+error (256)
+INT_LITERAL (258) 96
+FLOAT_LITERAL (259) 97
+BOOL_LITERAL (260) 99
+STRING_LITERAL (261) 98
+IDENTIFIER (262) 5 6 15 21 39 45 46 47 59 63 100
+INPUT (263) 5 6
+LET (264) 59
+FUN (265) 45
+RETURN (266) 49 50
+IF (267) 40 41
+ELSE (268) 41
+FOR (269) 39
+IN (270) 21 39
+WHILE (271) 42
+BREAK (272) 43
+CONTINUE (273) 44
+AT_IF (274) 19 20
+AT_ELSE (275) 20
+AT_FOR (276) 21
+AND (277) 12 69
+THEN (278) 14
+OR (279) 13 67
+STAR (280) 82
+SLASH (281) 83
+PLUS (282) 79
+MINUS (283) 80 88
+RBRACKET (284) 52 102
+LBRACKET (285) 52 102
+LPAREN (286) 15 45 91
+RPAREN (287) 15 45 91
+COLON (288) 5 6 12 13 14 19 20 21 39 40 41 42 45 46 59 65
+EQUAL (289) 5 59 63
+BANG (290) 89
+COMMA (291) 47 94
+GREATER (292) 74
+LESS (293) 75
+QUESTION_MARK (294) 65
+MOD (295) 84
+INDENT (296) 22 23 60 61
+DEDENT (297) 22 60
+OUTDENT (298) 23 61
+NEW_LINE (299) 5 6 12 13 14 15 19 20 21 29 30 32 33 34 38 39 40 41
+    42 45
+STAR_STAR (300) 86
+TYPE_ARROW (301) 45
+EQUAL_EQUAL (302) 71
+BANG_EQUAL (303) 72
+GREATER_EQUAL (304) 76
+LESS_EQUAL (305) 77
+INT (306) 53
+FLOAT (307) 54
+STRING (308) 55
+BOOL (309) 56
+VOID (310) 57
+NONE (311) 58
+
+
+Nonterminals, with rules where they appear
+
+$accept (57)
+    on left: 0
+program (58)
+    on left: 1, on right: 0
+input_list (59)
+    on left: 2 3 4, on right: 1 2
+input (60)
+    on left: 5 6, on right: 2 3
+tree (61)
+    on left: 7 8 9 10 11, on right: 1 24 25
+and_node (62)
+    on left: 12, on right: 7
+or_node (63)
+    on left: 13, on right: 8
+then_node (64)
+    on left: 14, on right: 9
+behavior_node (65)
+    on left: 15, on right: 10
+pseudo_node (66)
+    on left: 16 17 18, on right: 11
+at_if_stmt (67)
+    on left: 19, on right: 16
+at_if_else_stmt (68)
+    on left: 20, on right: 17
+at_for_stmt (69)
+    on left: 21, on right: 18
+children (70)
+    on left: 22 23, on right: 12 13 14 19 20 21
+node_list (71)
+    on left: 24 25, on right: 22 23 25
+stmt_list (72)
+    on left: 26 27, on right: 1 27 60 61
+stmt (73)
+    on left: 28 29 30 31 32 33 34 35 36 37 38, on right: 26 27
+for_in_stmt (74)
+    on left: 39, on right: 37
+if_stmt (75)
+    on left: 40 41, on right: 36
+while_stmt (76)
+    on left: 42, on right: 35
+break_stmt (77)
+    on left: 43, on right: 33
+continue_stmt (78)
+    on left: 44, on right: 34
+fn_decl (79)
+    on left: 45, on right: 31
+param_list (80)
+    on left: 46 47 48, on right: 45 47
+return_stmt (81)
+    on left: 49 50, on right: 32
+type (82)
+    on left: 51 52, on right: 5 6 45 46 47 59
+type_identifier (83)
+    on left: 53 54 55 56 57 58, on right: 51 52
+var_decl (84)
+    on left: 59, on right: 30
+block (85)
+    on left: 60 61, on right: 28 39 40 41 42 45
+expr (86)
+    on left: 62, on right: 5 19 20 29 39 40 41 42 49 59 63 65 93 94
+assignment (87)
+    on left: 63 64, on right: 62
+ternary (88)
+    on left: 65 66, on right: 64
+or (89)
+    on left: 67 68, on right: 66 67
+and (90)
+    on left: 69 70, on right: 67 68 69
+equality (91)
+    on left: 71 72 73, on right: 69 70 71 72
+comparison (92)
+    on left: 74 75 76 77 78, on right: 71 72 73 74 75 76 77
+term (93)
+    on left: 79 80 81, on right: 78 79 80
+factor (94)
+    on left: 82 83 84 85, on right: 79 80 81 82 83 84
+exponent (95)
+    on left: 86 87, on right: 82 83 84 85 86
+unary (96)
+    on left: 88 89 90, on right: 86 87 88 89
+call (97)
+    on left: 91 92, on right: 90
+arg_list (98)
+    on left: 93 94 95, on right: 15 91 94 102
+primary (99)
+    on left: 96 97 98 99 100 101, on right: 91 92
+array (100)
+    on left: 102, on right: 101
+
+
+state 0
+
+    0 $accept: . program $end
+
+    INPUT  shift, and go to state 1
+
+    INPUT     [reduce using rule 4 (input_list)]
+    $default  reduce using rule 4 (input_list)
+
+    program     go to state 2
+    input_list  go to state 3
+    input       go to state 4
+
+
+state 1
+
+    5 input: INPUT . IDENTIFIER COLON type EQUAL expr NEW_LINE
+    6      | INPUT . IDENTIFIER COLON type NEW_LINE
+
+    IDENTIFIER  shift, and go to state 5
+
+
+state 2
+
+    0 $accept: program . $end
+
+    $end  shift, and go to state 6
+
+
+state 3
+
+    1 program: input_list . stmt_list tree
+    2 input_list: input_list . input
+
+    INT_LITERAL     shift, and go to state 7
+    FLOAT_LITERAL   shift, and go to state 8
+    BOOL_LITERAL    shift, and go to state 9
+    STRING_LITERAL  shift, and go to state 10
+    IDENTIFIER      shift, and go to state 11
+    INPUT           shift, and go to state 1
+    LET             shift, and go to state 12
+    FUN             shift, and go to state 13
+    RETURN          shift, and go to state 14
+    IF              shift, and go to state 15
+    FOR             shift, and go to state 16
+    WHILE           shift, and go to state 17
+    BREAK           shift, and go to state 18
+    CONTINUE        shift, and go to state 19
+    MINUS           shift, and go to state 20
+    LBRACKET        shift, and go to state 21
+    BANG            shift, and go to state 22
+    INDENT          shift, and go to state 23
+    NEW_LINE        shift, and go to state 24
+
+    input          go to state 25
+    stmt_list      go to state 26
+    stmt           go to state 27
+    for_in_stmt    go to state 28
+    if_stmt        go to state 29
+    while_stmt     go to state 30
+    break_stmt     go to state 31
+    continue_stmt  go to state 32
+    fn_decl        go to state 33
+    return_stmt    go to state 34
+    var_decl       go to state 35
+    block          go to state 36
+    expr           go to state 37
+    assignment     go to state 38
+    ternary        go to state 39
+    or             go to state 40
+    and            go to state 41
+    equality       go to state 42
+    comparison     go to state 43
+    term           go to state 44
+    factor         go to state 45
+    exponent       go to state 46
+    unary          go to state 47
+    call           go to state 48
+    primary        go to state 49
+    array          go to state 50
+
+
+state 4
+
+    3 input_list: input .
+
+    $default  reduce using rule 3 (input_list)
+
+
+state 5
+
+    5 input: INPUT IDENTIFIER . COLON type EQUAL expr NEW_LINE
+    6      | INPUT IDENTIFIER . COLON type NEW_LINE
+
+    COLON  shift, and go to state 51
+
+
+state 6
+
+    0 $accept: program $end .
+
+    $default  accept
+
+
+state 7
+
+   96 primary: INT_LITERAL .
+
+    $default  reduce using rule 96 (primary)
+
+
+state 8
+
+   97 primary: FLOAT_LITERAL .
+
+    $default  reduce using rule 97 (primary)
+
+
+state 9
+
+   99 primary: BOOL_LITERAL .
+
+    $default  reduce using rule 99 (primary)
+
+
+state 10
+
+   98 primary: STRING_LITERAL .
+
+    $default  reduce using rule 98 (primary)
+
+
+state 11
+
+   63 assignment: IDENTIFIER . EQUAL expr
+  100 primary: IDENTIFIER .
+
+    EQUAL  shift, and go to state 52
+
+    $default  reduce using rule 100 (primary)
+
+
+state 12
+
+   59 var_decl: LET . IDENTIFIER COLON type EQUAL expr
+
+    IDENTIFIER  shift, and go to state 53
+
+
+state 13
+
+   45 fn_decl: FUN . IDENTIFIER LPAREN param_list RPAREN TYPE_ARROW type COLON NEW_LINE block
+
+    IDENTIFIER  shift, and go to state 54
+
+
+state 14
+
+   49 return_stmt: RETURN . expr
+   50            | RETURN .
+
+    INT_LITERAL     shift, and go to state 7
+    FLOAT_LITERAL   shift, and go to state 8
+    BOOL_LITERAL    shift, and go to state 9
+    STRING_LITERAL  shift, and go to state 10
+    IDENTIFIER      shift, and go to state 11
+    MINUS           shift, and go to state 20
+    LBRACKET        shift, and go to state 21
+    BANG            shift, and go to state 22
+
+    $default  reduce using rule 50 (return_stmt)
+
+    expr        go to state 55
+    assignment  go to state 38
+    ternary     go to state 39
+    or          go to state 40
+    and         go to state 41
+    equality    go to state 42
+    comparison  go to state 43
+    term        go to state 44
+    factor      go to state 45
+    exponent    go to state 46
+    unary       go to state 47
+    call        go to state 48
+    primary     go to state 49
+    array       go to state 50
+
+
+state 15
+
+   40 if_stmt: IF . expr COLON NEW_LINE block
+   41        | IF . expr COLON NEW_LINE block ELSE COLON NEW_LINE block
+
+    INT_LITERAL     shift, and go to state 7
+    FLOAT_LITERAL   shift, and go to state 8
+    BOOL_LITERAL    shift, and go to state 9
+    STRING_LITERAL  shift, and go to state 10
+    IDENTIFIER      shift, and go to state 11
+    MINUS           shift, and go to state 20
+    LBRACKET        shift, and go to state 21
+    BANG            shift, and go to state 22
+
+    expr        go to state 56
+    assignment  go to state 38
+    ternary     go to state 39
+    or          go to state 40
+    and         go to state 41
+    equality    go to state 42
+    comparison  go to state 43
+    term        go to state 44
+    factor      go to state 45
+    exponent    go to state 46
+    unary       go to state 47
+    call        go to state 48
+    primary     go to state 49
+    array       go to state 50
+
+
+state 16
+
+   39 for_in_stmt: FOR . IDENTIFIER IN expr COLON NEW_LINE block
+
+    IDENTIFIER  shift, and go to state 57
+
+
+state 17
+
+   42 while_stmt: WHILE . expr COLON NEW_LINE block
+
+    INT_LITERAL     shift, and go to state 7
+    FLOAT_LITERAL   shift, and go to state 8
+    BOOL_LITERAL    shift, and go to state 9
+    STRING_LITERAL  shift, and go to state 10
+    IDENTIFIER      shift, and go to state 11
+    MINUS           shift, and go to state 20
+    LBRACKET        shift, and go to state 21
+    BANG            shift, and go to state 22
+
+    expr        go to state 58
+    assignment  go to state 38
+    ternary     go to state 39
+    or          go to state 40
+    and         go to state 41
+    equality    go to state 42
+    comparison  go to state 43
+    term        go to state 44
+    factor      go to state 45
+    exponent    go to state 46
+    unary       go to state 47
+    call        go to state 48
+    primary     go to state 49
+    array       go to state 50
+
+
+state 18
+
+   43 break_stmt: BREAK .
+
+    $default  reduce using rule 43 (break_stmt)
+
+
+state 19
+
+   44 continue_stmt: CONTINUE .
+
+    $default  reduce using rule 44 (continue_stmt)
+
+
+state 20
+
+   88 unary: MINUS . unary
+
+    INT_LITERAL     shift, and go to state 7
+    FLOAT_LITERAL   shift, and go to state 8
+    BOOL_LITERAL    shift, and go to state 9
+    STRING_LITERAL  shift, and go to state 10
+    IDENTIFIER      shift, and go to state 59
+    MINUS           shift, and go to state 20
+    LBRACKET        shift, and go to state 21
+    BANG            shift, and go to state 22
+
+    unary    go to state 60
+    call     go to state 48
+    primary  go to state 49
+    array    go to state 50
+
+
+state 21
+
+  102 array: LBRACKET . arg_list RBRACKET
+
+    INT_LITERAL     shift, and go to state 7
+    FLOAT_LITERAL   shift, and go to state 8
+    BOOL_LITERAL    shift, and go to state 9
+    STRING_LITERAL  shift, and go to state 10
+    IDENTIFIER      shift, and go to state 11
+    MINUS           shift, and go to state 20
+    LBRACKET        shift, and go to state 21
+    BANG            shift, and go to state 22
+
+    $default  reduce using rule 95 (arg_list)
+
+    expr        go to state 61
+    assignment  go to state 38
+    ternary     go to state 39
+    or          go to state 40
+    and         go to state 41
+    equality    go to state 42
+    comparison  go to state 43
+    term        go to state 44
+    factor      go to state 45
+    exponent    go to state 46
+    unary       go to state 47
+    call        go to state 48
+    arg_list    go to state 62
+    primary     go to state 49
+    array       go to state 50
+
+
+state 22
+
+   89 unary: BANG . unary
+
+    INT_LITERAL     shift, and go to state 7
+    FLOAT_LITERAL   shift, and go to state 8
+    BOOL_LITERAL    shift, and go to state 9
+    STRING_LITERAL  shift, and go to state 10
+    IDENTIFIER      shift, and go to state 59
+    MINUS           shift, and go to state 20
+    LBRACKET        shift, and go to state 21
+    BANG            shift, and go to state 22
+
+    unary    go to state 63
+    call     go to state 48
+    primary  go to state 49
+    array    go to state 50
+
+
+state 23
+
+   60 block: INDENT . stmt_list DEDENT
+   61      | INDENT . stmt_list OUTDENT
+
+    INT_LITERAL     shift, and go to state 7
+    FLOAT_LITERAL   shift, and go to state 8
+    BOOL_LITERAL    shift, and go to state 9
+    STRING_LITERAL  shift, and go to state 10
+    IDENTIFIER      shift, and go to state 11
+    LET             shift, and go to state 12
+    FUN             shift, and go to state 13
+    RETURN          shift, and go to state 14
+    IF              shift, and go to state 15
+    FOR             shift, and go to state 16
+    WHILE           shift, and go to state 17
+    BREAK           shift, and go to state 18
+    CONTINUE        shift, and go to state 19
+    MINUS           shift, and go to state 20
+    LBRACKET        shift, and go to state 21
+    BANG            shift, and go to state 22
+    INDENT          shift, and go to state 23
+    NEW_LINE        shift, and go to state 24
+
+    stmt_list      go to state 64
+    stmt           go to state 27
+    for_in_stmt    go to state 28
+    if_stmt        go to state 29
+    while_stmt     go to state 30
+    break_stmt     go to state 31
+    continue_stmt  go to state 32
+    fn_decl        go to state 33
+    return_stmt    go to state 34
+    var_decl       go to state 35
+    block          go to state 36
+    expr           go to state 37
+    assignment     go to state 38
+    ternary        go to state 39
+    or             go to state 40
+    and            go to state 41
+    equality       go to state 42
+    comparison     go to state 43
+    term           go to state 44
+    factor         go to state 45
+    exponent       go to state 46
+    unary          go to state 47
+    call           go to state 48
+    primary        go to state 49
+    array          go to state 50
+
+
+state 24
+
+   38 stmt: NEW_LINE .
+
+    $default  reduce using rule 38 (stmt)
+
+
+state 25
+
+    2 input_list: input_list input .
+
+    $default  reduce using rule 2 (input_list)
+
+
+state 26
+
+    1 program: input_list stmt_list . tree
+
+    IDENTIFIER  shift, and go to state 65
+    AT_IF       shift, and go to state 66
+    AT_FOR      shift, and go to state 67
+    AND         shift, and go to state 68
+    THEN        shift, and go to state 69
+    OR          shift, and go to state 70
+
+    tree             go to state 71
+    and_node         go to state 72
+    or_node          go to state 73
+    then_node        go to state 74
+    behavior_node    go to state 75
+    pseudo_node      go to state 76
+    at_if_stmt       go to state 77
+    at_if_else_stmt  go to state 78
+    at_for_stmt      go to state 79
+
+
+state 27
+
+   26 stmt_list: stmt .
+   27          | stmt . stmt_list
+
+    INT_LITERAL     shift, and go to state 7
+    FLOAT_LITERAL   shift, and go to state 8
+    BOOL_LITERAL    shift, and go to state 9
+    STRING_LITERAL  shift, and go to state 10
+    IDENTIFIER      shift, and go to state 11
+    LET             shift, and go to state 12
+    FUN             shift, and go to state 13
+    RETURN          shift, and go to state 14
+    IF              shift, and go to state 15
+    FOR             shift, and go to state 16
+    WHILE           shift, and go to state 17
+    BREAK           shift, and go to state 18
+    CONTINUE        shift, and go to state 19
+    MINUS           shift, and go to state 20
+    LBRACKET        shift, and go to state 21
+    BANG            shift, and go to state 22
+    INDENT          shift, and go to state 23
+    NEW_LINE        shift, and go to state 24
+
+    IDENTIFIER  [reduce using rule 26 (stmt_list)]
+    $default    reduce using rule 26 (stmt_list)
+
+    stmt_list      go to state 80
+    stmt           go to state 27
+    for_in_stmt    go to state 28
+    if_stmt        go to state 29
+    while_stmt     go to state 30
+    break_stmt     go to state 31
+    continue_stmt  go to state 32
+    fn_decl        go to state 33
+    return_stmt    go to state 34
+    var_decl       go to state 35
+    block          go to state 36
+    expr           go to state 37
+    assignment     go to state 38
+    ternary        go to state 39
+    or             go to state 40
+    and            go to state 41
+    equality       go to state 42
+    comparison     go to state 43
+    term           go to state 44
+    factor         go to state 45
+    exponent       go to state 46
+    unary          go to state 47
+    call           go to state 48
+    primary        go to state 49
+    array          go to state 50
+
+
+state 28
+
+   37 stmt: for_in_stmt .
+
+    $default  reduce using rule 37 (stmt)
+
+
+state 29
+
+   36 stmt: if_stmt .
+
+    $default  reduce using rule 36 (stmt)
+
+
+state 30
+
+   35 stmt: while_stmt .
+
+    $default  reduce using rule 35 (stmt)
+
+
+state 31
+
+   33 stmt: break_stmt . NEW_LINE
+
+    NEW_LINE  shift, and go to state 81
+
+
+state 32
+
+   34 stmt: continue_stmt . NEW_LINE
+
+    NEW_LINE  shift, and go to state 82
+
+
+state 33
+
+   31 stmt: fn_decl .
+
+    $default  reduce using rule 31 (stmt)
+
+
+state 34
+
+   32 stmt: return_stmt . NEW_LINE
+
+    NEW_LINE  shift, and go to state 83
+
+
+state 35
+
+   30 stmt: var_decl . NEW_LINE
+
+    NEW_LINE  shift, and go to state 84
+
+
+state 36
+
+   28 stmt: block .
+
+    $default  reduce using rule 28 (stmt)
+
+
+state 37
+
+   29 stmt: expr . NEW_LINE
+   65 ternary: expr . QUESTION_MARK expr COLON expr
+
+    QUESTION_MARK  shift, and go to state 85
+    NEW_LINE       shift, and go to state 86
+
+
+state 38
+
+   62 expr: assignment .
+
+    $default  reduce using rule 62 (expr)
+
+
+state 39
+
+   64 assignment: ternary .
+
+    $default  reduce using rule 64 (assignment)
+
+
+state 40
+
+   66 ternary: or .
+   67 or: or . OR and
+
+    OR  shift, and go to state 87
+
+    $default  reduce using rule 66 (ternary)
+
+
+state 41
+
+   68 or: and .
+   69 and: and . AND equality
+
+    AND  shift, and go to state 88
+
+    $default  reduce using rule 68 (or)
+
+
+state 42
+
+   70 and: equality .
+   71 equality: equality . EQUAL_EQUAL comparison
+   72         | equality . BANG_EQUAL comparison
+
+    EQUAL_EQUAL  shift, and go to state 89
+    BANG_EQUAL   shift, and go to state 90
+
+    $default  reduce using rule 70 (and)
+
+
+state 43
+
+   73 equality: comparison .
+   74 comparison: comparison . GREATER comparison
+   75           | comparison . LESS comparison
+   76           | comparison . GREATER_EQUAL comparison
+   77           | comparison . LESS_EQUAL comparison
+
+    GREATER        shift, and go to state 91
+    LESS           shift, and go to state 92
+    GREATER_EQUAL  shift, and go to state 93
+    LESS_EQUAL     shift, and go to state 94
+
+    $default  reduce using rule 73 (equality)
+
+
+state 44
+
+   78 comparison: term .
+
+    $default  reduce using rule 78 (comparison)
+
+
+state 45
+
+   79 term: factor . PLUS term
+   80     | factor . MINUS term
+   81     | factor .
+
+    PLUS   shift, and go to state 95
+    MINUS  shift, and go to state 96
+
+    $default  reduce using rule 81 (term)
+
+
+state 46
+
+   82 factor: exponent . STAR factor
+   83       | exponent . SLASH factor
+   84       | exponent . MOD factor
+   85       | exponent .
+
+    STAR   shift, and go to state 97
+    SLASH  shift, and go to state 98
+    MOD    shift, and go to state 99
+
+    $default  reduce using rule 85 (factor)
+
+
+state 47
+
+   86 exponent: unary . STAR_STAR exponent
+   87         | unary .
+
+    STAR_STAR  shift, and go to state 100
+
+    $default  reduce using rule 87 (exponent)
+
+
+state 48
+
+   90 unary: call .
+
+    $default  reduce using rule 90 (unary)
+
+
+state 49
+
+   91 call: primary . LPAREN arg_list RPAREN
+   92     | primary .
+
+    LPAREN  shift, and go to state 101
+
+    $default  reduce using rule 92 (call)
+
+
+state 50
+
+  101 primary: array .
+
+    $default  reduce using rule 101 (primary)
+
+
+state 51
+
+    5 input: INPUT IDENTIFIER COLON . type EQUAL expr NEW_LINE
+    6      | INPUT IDENTIFIER COLON . type NEW_LINE
+
+    INT     shift, and go to state 102
+    FLOAT   shift, and go to state 103
+    STRING  shift, and go to state 104
+    BOOL    shift, and go to state 105
+    VOID    shift, and go to state 106
+    NONE    shift, and go to state 107
+
+    type             go to state 108
+    type_identifier  go to state 109
+
+
+state 52
+
+   63 assignment: IDENTIFIER EQUAL . expr
+
+    INT_LITERAL     shift, and go to state 7
+    FLOAT_LITERAL   shift, and go to state 8
+    BOOL_LITERAL    shift, and go to state 9
+    STRING_LITERAL  shift, and go to state 10
+    IDENTIFIER      shift, and go to state 11
+    MINUS           shift, and go to state 20
+    LBRACKET        shift, and go to state 21
+    BANG            shift, and go to state 22
+
+    expr        go to state 110
+    assignment  go to state 38
+    ternary     go to state 39
+    or          go to state 40
+    and         go to state 41
+    equality    go to state 42
+    comparison  go to state 43
+    term        go to state 44
+    factor      go to state 45
+    exponent    go to state 46
+    unary       go to state 47
+    call        go to state 48
+    primary     go to state 49
+    array       go to state 50
+
+
+state 53
+
+   59 var_decl: LET IDENTIFIER . COLON type EQUAL expr
+
+    COLON  shift, and go to state 111
+
+
+state 54
+
+   45 fn_decl: FUN IDENTIFIER . LPAREN param_list RPAREN TYPE_ARROW type COLON NEW_LINE block
+
+    LPAREN  shift, and go to state 112
+
+
+state 55
+
+   49 return_stmt: RETURN expr .
+   65 ternary: expr . QUESTION_MARK expr COLON expr
+
+    QUESTION_MARK  shift, and go to state 85
+
+    $default  reduce using rule 49 (return_stmt)
+
+
+state 56
+
+   40 if_stmt: IF expr . COLON NEW_LINE block
+   41        | IF expr . COLON NEW_LINE block ELSE COLON NEW_LINE block
+   65 ternary: expr . QUESTION_MARK expr COLON expr
+
+    COLON          shift, and go to state 113
+    QUESTION_MARK  shift, and go to state 85
+
+
+state 57
+
+   39 for_in_stmt: FOR IDENTIFIER . IN expr COLON NEW_LINE block
+
+    IN  shift, and go to state 114
+
+
+state 58
+
+   42 while_stmt: WHILE expr . COLON NEW_LINE block
+   65 ternary: expr . QUESTION_MARK expr COLON expr
+
+    COLON          shift, and go to state 115
+    QUESTION_MARK  shift, and go to state 85
+
+
+state 59
+
+  100 primary: IDENTIFIER .
+
+    $default  reduce using rule 100 (primary)
+
+
+state 60
+
+   88 unary: MINUS unary .
+
+    $default  reduce using rule 88 (unary)
+
+
+state 61
+
+   65 ternary: expr . QUESTION_MARK expr COLON expr
+   93 arg_list: expr .
+   94         | expr . COMMA arg_list
+
+    COMMA          shift, and go to state 116
+    QUESTION_MARK  shift, and go to state 85
+
+    $default  reduce using rule 93 (arg_list)
+
+
+state 62
+
+  102 array: LBRACKET arg_list . RBRACKET
+
+    RBRACKET  shift, and go to state 117
+
+
+state 63
+
+   89 unary: BANG unary .
+
+    $default  reduce using rule 89 (unary)
+
+
+state 64
+
+   60 block: INDENT stmt_list . DEDENT
+   61      | INDENT stmt_list . OUTDENT
+
+    DEDENT   shift, and go to state 118
+    OUTDENT  shift, and go to state 119
+
+
+state 65
+
+   15 behavior_node: IDENTIFIER . LPAREN arg_list RPAREN NEW_LINE
+
+    LPAREN  shift, and go to state 120
+
+
+state 66
+
+   19 at_if_stmt: AT_IF . expr COLON NEW_LINE children
+   20 at_if_else_stmt: AT_IF . expr COLON NEW_LINE children AT_ELSE COLON NEW_LINE children
+
+    INT_LITERAL     shift, and go to state 7
+    FLOAT_LITERAL   shift, and go to state 8
+    BOOL_LITERAL    shift, and go to state 9
+    STRING_LITERAL  shift, and go to state 10
+    IDENTIFIER      shift, and go to state 11
+    MINUS           shift, and go to state 20
+    LBRACKET        shift, and go to state 21
+    BANG            shift, and go to state 22
+
+    expr        go to state 121
+    assignment  go to state 38
+    ternary     go to state 39
+    or          go to state 40
+    and         go to state 41
+    equality    go to state 42
+    comparison  go to state 43
+    term        go to state 44
+    factor      go to state 45
+    exponent    go to state 46
+    unary       go to state 47
+    call        go to state 48
+    primary     go to state 49
+    array       go to state 50
+
+
+state 67
+
+   21 at_for_stmt: AT_FOR . IDENTIFIER IN IDENTIFIER COLON NEW_LINE children
+
+    IDENTIFIER  shift, and go to state 122
+
+
+state 68
+
+   12 and_node: AND . COLON NEW_LINE children
+
+    COLON  shift, and go to state 123
+
+
+state 69
+
+   14 then_node: THEN . COLON NEW_LINE children
+
+    COLON  shift, and go to state 124
+
+
+state 70
+
+   13 or_node: OR . COLON NEW_LINE children
+
+    COLON  shift, and go to state 125
+
+
+state 71
+
+    1 program: input_list stmt_list tree .
+
+    $default  reduce using rule 1 (program)
+
+
+state 72
+
+    7 tree: and_node .
+
+    $default  reduce using rule 7 (tree)
+
+
+state 73
+
+    8 tree: or_node .
+
+    $default  reduce using rule 8 (tree)
+
+
+state 74
+
+    9 tree: then_node .
+
+    $default  reduce using rule 9 (tree)
+
+
+state 75
+
+   10 tree: behavior_node .
+
+    $default  reduce using rule 10 (tree)
+
+
+state 76
+
+   11 tree: pseudo_node .
+
+    $default  reduce using rule 11 (tree)
+
+
+state 77
+
+   16 pseudo_node: at_if_stmt .
+
+    $default  reduce using rule 16 (pseudo_node)
+
+
+state 78
+
+   17 pseudo_node: at_if_else_stmt .
+
+    $default  reduce using rule 17 (pseudo_node)
+
+
+state 79
+
+   18 pseudo_node: at_for_stmt .
+
+    $default  reduce using rule 18 (pseudo_node)
+
+
+state 80
+
+   27 stmt_list: stmt stmt_list .
+
+    $default  reduce using rule 27 (stmt_list)
+
+
+state 81
+
+   33 stmt: break_stmt NEW_LINE .
+
+    $default  reduce using rule 33 (stmt)
+
+
+state 82
+
+   34 stmt: continue_stmt NEW_LINE .
+
+    $default  reduce using rule 34 (stmt)
+
+
+state 83
+
+   32 stmt: return_stmt NEW_LINE .
+
+    $default  reduce using rule 32 (stmt)
+
+
+state 84
+
+   30 stmt: var_decl NEW_LINE .
+
+    $default  reduce using rule 30 (stmt)
+
+
+state 85
+
+   65 ternary: expr QUESTION_MARK . expr COLON expr
+
+    INT_LITERAL     shift, and go to state 7
+    FLOAT_LITERAL   shift, and go to state 8
+    BOOL_LITERAL    shift, and go to state 9
+    STRING_LITERAL  shift, and go to state 10
+    IDENTIFIER      shift, and go to state 11
+    MINUS           shift, and go to state 20
+    LBRACKET        shift, and go to state 21
+    BANG            shift, and go to state 22
+
+    expr        go to state 126
+    assignment  go to state 38
+    ternary     go to state 39
+    or          go to state 40
+    and         go to state 41
+    equality    go to state 42
+    comparison  go to state 43
+    term        go to state 44
+    factor      go to state 45
+    exponent    go to state 46
+    unary       go to state 47
+    call        go to state 48
+    primary     go to state 49
+    array       go to state 50
+
+
+state 86
+
+   29 stmt: expr NEW_LINE .
+
+    $default  reduce using rule 29 (stmt)
+
+
+state 87
+
+   67 or: or OR . and
+
+    INT_LITERAL     shift, and go to state 7
+    FLOAT_LITERAL   shift, and go to state 8
+    BOOL_LITERAL    shift, and go to state 9
+    STRING_LITERAL  shift, and go to state 10
+    IDENTIFIER      shift, and go to state 59
+    MINUS           shift, and go to state 20
+    LBRACKET        shift, and go to state 21
+    BANG            shift, and go to state 22
+
+    and         go to state 127
+    equality    go to state 42
+    comparison  go to state 43
+    term        go to state 44
+    factor      go to state 45
+    exponent    go to state 46
+    unary       go to state 47
+    call        go to state 48
+    primary     go to state 49
+    array       go to state 50
+
+
+state 88
+
+   69 and: and AND . equality
+
+    INT_LITERAL     shift, and go to state 7
+    FLOAT_LITERAL   shift, and go to state 8
+    BOOL_LITERAL    shift, and go to state 9
+    STRING_LITERAL  shift, and go to state 10
+    IDENTIFIER      shift, and go to state 59
+    MINUS           shift, and go to state 20
+    LBRACKET        shift, and go to state 21
+    BANG            shift, and go to state 22
+
+    equality    go to state 128
+    comparison  go to state 43
+    term        go to state 44
+    factor      go to state 45
+    exponent    go to state 46
+    unary       go to state 47
+    call        go to state 48
+    primary     go to state 49
+    array       go to state 50
+
+
+state 89
+
+   71 equality: equality EQUAL_EQUAL . comparison
+
+    INT_LITERAL     shift, and go to state 7
+    FLOAT_LITERAL   shift, and go to state 8
+    BOOL_LITERAL    shift, and go to state 9
+    STRING_LITERAL  shift, and go to state 10
+    IDENTIFIER      shift, and go to state 59
+    MINUS           shift, and go to state 20
+    LBRACKET        shift, and go to state 21
+    BANG            shift, and go to state 22
+
+    comparison  go to state 129
+    term        go to state 44
+    factor      go to state 45
+    exponent    go to state 46
+    unary       go to state 47
+    call        go to state 48
+    primary     go to state 49
+    array       go to state 50
+
+
+state 90
+
+   72 equality: equality BANG_EQUAL . comparison
+
+    INT_LITERAL     shift, and go to state 7
+    FLOAT_LITERAL   shift, and go to state 8
+    BOOL_LITERAL    shift, and go to state 9
+    STRING_LITERAL  shift, and go to state 10
+    IDENTIFIER      shift, and go to state 59
+    MINUS           shift, and go to state 20
+    LBRACKET        shift, and go to state 21
+    BANG            shift, and go to state 22
+
+    comparison  go to state 130
+    term        go to state 44
+    factor      go to state 45
+    exponent    go to state 46
+    unary       go to state 47
+    call        go to state 48
+    primary     go to state 49
+    array       go to state 50
+
+
+state 91
+
+   74 comparison: comparison GREATER . comparison
+
+    INT_LITERAL     shift, and go to state 7
+    FLOAT_LITERAL   shift, and go to state 8
+    BOOL_LITERAL    shift, and go to state 9
+    STRING_LITERAL  shift, and go to state 10
+    IDENTIFIER      shift, and go to state 59
+    MINUS           shift, and go to state 20
+    LBRACKET        shift, and go to state 21
+    BANG            shift, and go to state 22
+
+    comparison  go to state 131
+    term        go to state 44
+    factor      go to state 45
+    exponent    go to state 46
+    unary       go to state 47
+    call        go to state 48
+    primary     go to state 49
+    array       go to state 50
+
+
+state 92
+
+   75 comparison: comparison LESS . comparison
+
+    INT_LITERAL     shift, and go to state 7
+    FLOAT_LITERAL   shift, and go to state 8
+    BOOL_LITERAL    shift, and go to state 9
+    STRING_LITERAL  shift, and go to state 10
+    IDENTIFIER      shift, and go to state 59
+    MINUS           shift, and go to state 20
+    LBRACKET        shift, and go to state 21
+    BANG            shift, and go to state 22
+
+    comparison  go to state 132
+    term        go to state 44
+    factor      go to state 45
+    exponent    go to state 46
+    unary       go to state 47
+    call        go to state 48
+    primary     go to state 49
+    array       go to state 50
+
+
+state 93
+
+   76 comparison: comparison GREATER_EQUAL . comparison
+
+    INT_LITERAL     shift, and go to state 7
+    FLOAT_LITERAL   shift, and go to state 8
+    BOOL_LITERAL    shift, and go to state 9
+    STRING_LITERAL  shift, and go to state 10
+    IDENTIFIER      shift, and go to state 59
+    MINUS           shift, and go to state 20
+    LBRACKET        shift, and go to state 21
+    BANG            shift, and go to state 22
+
+    comparison  go to state 133
+    term        go to state 44
+    factor      go to state 45
+    exponent    go to state 46
+    unary       go to state 47
+    call        go to state 48
+    primary     go to state 49
+    array       go to state 50
+
+
+state 94
+
+   77 comparison: comparison LESS_EQUAL . comparison
+
+    INT_LITERAL     shift, and go to state 7
+    FLOAT_LITERAL   shift, and go to state 8
+    BOOL_LITERAL    shift, and go to state 9
+    STRING_LITERAL  shift, and go to state 10
+    IDENTIFIER      shift, and go to state 59
+    MINUS           shift, and go to state 20
+    LBRACKET        shift, and go to state 21
+    BANG            shift, and go to state 22
+
+    comparison  go to state 134
+    term        go to state 44
+    factor      go to state 45
+    exponent    go to state 46
+    unary       go to state 47
+    call        go to state 48
+    primary     go to state 49
+    array       go to state 50
+
+
+state 95
+
+   79 term: factor PLUS . term
+
+    INT_LITERAL     shift, and go to state 7
+    FLOAT_LITERAL   shift, and go to state 8
+    BOOL_LITERAL    shift, and go to state 9
+    STRING_LITERAL  shift, and go to state 10
+    IDENTIFIER      shift, and go to state 59
+    MINUS           shift, and go to state 20
+    LBRACKET        shift, and go to state 21
+    BANG            shift, and go to state 22
+
+    term      go to state 135
+    factor    go to state 45
+    exponent  go to state 46
+    unary     go to state 47
+    call      go to state 48
+    primary   go to state 49
+    array     go to state 50
+
+
+state 96
+
+   80 term: factor MINUS . term
+
+    INT_LITERAL     shift, and go to state 7
+    FLOAT_LITERAL   shift, and go to state 8
+    BOOL_LITERAL    shift, and go to state 9
+    STRING_LITERAL  shift, and go to state 10
+    IDENTIFIER      shift, and go to state 59
+    MINUS           shift, and go to state 20
+    LBRACKET        shift, and go to state 21
+    BANG            shift, and go to state 22
+
+    term      go to state 136
+    factor    go to state 45
+    exponent  go to state 46
+    unary     go to state 47
+    call      go to state 48
+    primary   go to state 49
+    array     go to state 50
+
+
+state 97
+
+   82 factor: exponent STAR . factor
+
+    INT_LITERAL     shift, and go to state 7
+    FLOAT_LITERAL   shift, and go to state 8
+    BOOL_LITERAL    shift, and go to state 9
+    STRING_LITERAL  shift, and go to state 10
+    IDENTIFIER      shift, and go to state 59
+    MINUS           shift, and go to state 20
+    LBRACKET        shift, and go to state 21
+    BANG            shift, and go to state 22
+
+    factor    go to state 137
+    exponent  go to state 46
+    unary     go to state 47
+    call      go to state 48
+    primary   go to state 49
+    array     go to state 50
+
+
+state 98
+
+   83 factor: exponent SLASH . factor
+
+    INT_LITERAL     shift, and go to state 7
+    FLOAT_LITERAL   shift, and go to state 8
+    BOOL_LITERAL    shift, and go to state 9
+    STRING_LITERAL  shift, and go to state 10
+    IDENTIFIER      shift, and go to state 59
+    MINUS           shift, and go to state 20
+    LBRACKET        shift, and go to state 21
+    BANG            shift, and go to state 22
+
+    factor    go to state 138
+    exponent  go to state 46
+    unary     go to state 47
+    call      go to state 48
+    primary   go to state 49
+    array     go to state 50
+
+
+state 99
+
+   84 factor: exponent MOD . factor
+
+    INT_LITERAL     shift, and go to state 7
+    FLOAT_LITERAL   shift, and go to state 8
+    BOOL_LITERAL    shift, and go to state 9
+    STRING_LITERAL  shift, and go to state 10
+    IDENTIFIER      shift, and go to state 59
+    MINUS           shift, and go to state 20
+    LBRACKET        shift, and go to state 21
+    BANG            shift, and go to state 22
+
+    factor    go to state 139
+    exponent  go to state 46
+    unary     go to state 47
+    call      go to state 48
+    primary   go to state 49
+    array     go to state 50
+
+
+state 100
+
+   86 exponent: unary STAR_STAR . exponent
+
+    INT_LITERAL     shift, and go to state 7
+    FLOAT_LITERAL   shift, and go to state 8
+    BOOL_LITERAL    shift, and go to state 9
+    STRING_LITERAL  shift, and go to state 10
+    IDENTIFIER      shift, and go to state 59
+    MINUS           shift, and go to state 20
+    LBRACKET        shift, and go to state 21
+    BANG            shift, and go to state 22
+
+    exponent  go to state 140
+    unary     go to state 47
+    call      go to state 48
+    primary   go to state 49
+    array     go to state 50
+
+
+state 101
+
+   91 call: primary LPAREN . arg_list RPAREN
+
+    INT_LITERAL     shift, and go to state 7
+    FLOAT_LITERAL   shift, and go to state 8
+    BOOL_LITERAL    shift, and go to state 9
+    STRING_LITERAL  shift, and go to state 10
+    IDENTIFIER      shift, and go to state 11
+    MINUS           shift, and go to state 20
+    LBRACKET        shift, and go to state 21
+    BANG            shift, and go to state 22
+
+    $default  reduce using rule 95 (arg_list)
+
+    expr        go to state 61
+    assignment  go to state 38
+    ternary     go to state 39
+    or          go to state 40
+    and         go to state 41
+    equality    go to state 42
+    comparison  go to state 43
+    term        go to state 44
+    factor      go to state 45
+    exponent    go to state 46
+    unary       go to state 47
+    call        go to state 48
+    arg_list    go to state 141
+    primary     go to state 49
+    array       go to state 50
+
+
+state 102
+
+   53 type_identifier: INT .
+
+    $default  reduce using rule 53 (type_identifier)
+
+
+state 103
+
+   54 type_identifier: FLOAT .
+
+    $default  reduce using rule 54 (type_identifier)
+
+
+state 104
+
+   55 type_identifier: STRING .
+
+    $default  reduce using rule 55 (type_identifier)
+
+
+state 105
+
+   56 type_identifier: BOOL .
+
+    $default  reduce using rule 56 (type_identifier)
+
+
+state 106
+
+   57 type_identifier: VOID .
+
+    $default  reduce using rule 57 (type_identifier)
+
+
+state 107
+
+   58 type_identifier: NONE .
+
+    $default  reduce using rule 58 (type_identifier)
+
+
+state 108
+
+    5 input: INPUT IDENTIFIER COLON type . EQUAL expr NEW_LINE
+    6      | INPUT IDENTIFIER COLON type . NEW_LINE
+
+    EQUAL     shift, and go to state 142
+    NEW_LINE  shift, and go to state 143
+
+
+state 109
+
+   51 type: type_identifier .
+   52     | type_identifier . LBRACKET RBRACKET
+
+    LBRACKET  shift, and go to state 144
+
+    $default  reduce using rule 51 (type)
+
+
+state 110
+
+   63 assignment: IDENTIFIER EQUAL expr .
+   65 ternary: expr . QUESTION_MARK expr COLON expr
+
+    QUESTION_MARK  shift, and go to state 85
+
+    QUESTION_MARK  [reduce using rule 63 (assignment)]
+    $default       reduce using rule 63 (assignment)
+
+
+state 111
+
+   59 var_decl: LET IDENTIFIER COLON . type EQUAL expr
+
+    INT     shift, and go to state 102
+    FLOAT   shift, and go to state 103
+    STRING  shift, and go to state 104
+    BOOL    shift, and go to state 105
+    VOID    shift, and go to state 106
+    NONE    shift, and go to state 107
+
+    type             go to state 145
+    type_identifier  go to state 109
+
+
+state 112
+
+   45 fn_decl: FUN IDENTIFIER LPAREN . param_list RPAREN TYPE_ARROW type COLON NEW_LINE block
+
+    IDENTIFIER  shift, and go to state 146
+
+    $default  reduce using rule 48 (param_list)
+
+    param_list  go to state 147
+
+
+state 113
+
+   40 if_stmt: IF expr COLON . NEW_LINE block
+   41        | IF expr COLON . NEW_LINE block ELSE COLON NEW_LINE block
+
+    NEW_LINE  shift, and go to state 148
+
+
+state 114
+
+   39 for_in_stmt: FOR IDENTIFIER IN . expr COLON NEW_LINE block
+
+    INT_LITERAL     shift, and go to state 7
+    FLOAT_LITERAL   shift, and go to state 8
+    BOOL_LITERAL    shift, and go to state 9
+    STRING_LITERAL  shift, and go to state 10
+    IDENTIFIER      shift, and go to state 11
+    MINUS           shift, and go to state 20
+    LBRACKET        shift, and go to state 21
+    BANG            shift, and go to state 22
+
+    expr        go to state 149
+    assignment  go to state 38
+    ternary     go to state 39
+    or          go to state 40
+    and         go to state 41
+    equality    go to state 42
+    comparison  go to state 43
+    term        go to state 44
+    factor      go to state 45
+    exponent    go to state 46
+    unary       go to state 47
+    call        go to state 48
+    primary     go to state 49
+    array       go to state 50
+
+
+state 115
+
+   42 while_stmt: WHILE expr COLON . NEW_LINE block
+
+    NEW_LINE  shift, and go to state 150
+
+
+state 116
+
+   94 arg_list: expr COMMA . arg_list
+
+    INT_LITERAL     shift, and go to state 7
+    FLOAT_LITERAL   shift, and go to state 8
+    BOOL_LITERAL    shift, and go to state 9
+    STRING_LITERAL  shift, and go to state 10
+    IDENTIFIER      shift, and go to state 11
+    MINUS           shift, and go to state 20
+    LBRACKET        shift, and go to state 21
+    BANG            shift, and go to state 22
+
+    $default  reduce using rule 95 (arg_list)
+
+    expr        go to state 61
+    assignment  go to state 38
+    ternary     go to state 39
+    or          go to state 40
+    and         go to state 41
+    equality    go to state 42
+    comparison  go to state 43
+    term        go to state 44
+    factor      go to state 45
+    exponent    go to state 46
+    unary       go to state 47
+    call        go to state 48
+    arg_list    go to state 151
+    primary     go to state 49
+    array       go to state 50
+
+
+state 117
+
+  102 array: LBRACKET arg_list RBRACKET .
+
+    $default  reduce using rule 102 (array)
+
+
+state 118
+
+   60 block: INDENT stmt_list DEDENT .
+
+    $default  reduce using rule 60 (block)
+
+
+state 119
+
+   61 block: INDENT stmt_list OUTDENT .
+
+    $default  reduce using rule 61 (block)
+
+
+state 120
+
+   15 behavior_node: IDENTIFIER LPAREN . arg_list RPAREN NEW_LINE
+
+    INT_LITERAL     shift, and go to state 7
+    FLOAT_LITERAL   shift, and go to state 8
+    BOOL_LITERAL    shift, and go to state 9
+    STRING_LITERAL  shift, and go to state 10
+    IDENTIFIER      shift, and go to state 11
+    MINUS           shift, and go to state 20
+    LBRACKET        shift, and go to state 21
+    BANG            shift, and go to state 22
+
+    $default  reduce using rule 95 (arg_list)
+
+    expr        go to state 61
+    assignment  go to state 38
+    ternary     go to state 39
+    or          go to state 40
+    and         go to state 41
+    equality    go to state 42
+    comparison  go to state 43
+    term        go to state 44
+    factor      go to state 45
+    exponent    go to state 46
+    unary       go to state 47
+    call        go to state 48
+    arg_list    go to state 152
+    primary     go to state 49
+    array       go to state 50
+
+
+state 121
+
+   19 at_if_stmt: AT_IF expr . COLON NEW_LINE children
+   20 at_if_else_stmt: AT_IF expr . COLON NEW_LINE children AT_ELSE COLON NEW_LINE children
+   65 ternary: expr . QUESTION_MARK expr COLON expr
+
+    COLON          shift, and go to state 153
+    QUESTION_MARK  shift, and go to state 85
+
+
+state 122
+
+   21 at_for_stmt: AT_FOR IDENTIFIER . IN IDENTIFIER COLON NEW_LINE children
+
+    IN  shift, and go to state 154
+
+
+state 123
+
+   12 and_node: AND COLON . NEW_LINE children
+
+    NEW_LINE  shift, and go to state 155
+
+
+state 124
+
+   14 then_node: THEN COLON . NEW_LINE children
+
+    NEW_LINE  shift, and go to state 156
+
+
+state 125
+
+   13 or_node: OR COLON . NEW_LINE children
+
+    NEW_LINE  shift, and go to state 157
+
+
+state 126
+
+   65 ternary: expr . QUESTION_MARK expr COLON expr
+   65        | expr QUESTION_MARK expr . COLON expr
+
+    COLON          shift, and go to state 158
+    QUESTION_MARK  shift, and go to state 85
+
+
+state 127
+
+   67 or: or OR and .
+   69 and: and . AND equality
+
+    AND  shift, and go to state 88
+
+    $default  reduce using rule 67 (or)
+
+
+state 128
+
+   69 and: and AND equality .
+   71 equality: equality . EQUAL_EQUAL comparison
+   72         | equality . BANG_EQUAL comparison
+
+    EQUAL_EQUAL  shift, and go to state 89
+    BANG_EQUAL   shift, and go to state 90
+
+    $default  reduce using rule 69 (and)
+
+
+state 129
+
+   71 equality: equality EQUAL_EQUAL comparison .
+   74 comparison: comparison . GREATER comparison
+   75           | comparison . LESS comparison
+   76           | comparison . GREATER_EQUAL comparison
+   77           | comparison . LESS_EQUAL comparison
+
+    GREATER        shift, and go to state 91
+    LESS           shift, and go to state 92
+    GREATER_EQUAL  shift, and go to state 93
+    LESS_EQUAL     shift, and go to state 94
+
+    $default  reduce using rule 71 (equality)
+
+
+state 130
+
+   72 equality: equality BANG_EQUAL comparison .
+   74 comparison: comparison . GREATER comparison
+   75           | comparison . LESS comparison
+   76           | comparison . GREATER_EQUAL comparison
+   77           | comparison . LESS_EQUAL comparison
+
+    GREATER        shift, and go to state 91
+    LESS           shift, and go to state 92
+    GREATER_EQUAL  shift, and go to state 93
+    LESS_EQUAL     shift, and go to state 94
+
+    $default  reduce using rule 72 (equality)
+
+
+state 131
+
+   74 comparison: comparison . GREATER comparison
+   74           | comparison GREATER comparison .
+   75           | comparison . LESS comparison
+   76           | comparison . GREATER_EQUAL comparison
+   77           | comparison . LESS_EQUAL comparison
+
+    GREATER        shift, and go to state 91
+    LESS           shift, and go to state 92
+    GREATER_EQUAL  shift, and go to state 93
+    LESS_EQUAL     shift, and go to state 94
+
+    GREATER        [reduce using rule 74 (comparison)]
+    LESS           [reduce using rule 74 (comparison)]
+    GREATER_EQUAL  [reduce using rule 74 (comparison)]
+    LESS_EQUAL     [reduce using rule 74 (comparison)]
+    $default       reduce using rule 74 (comparison)
+
+
+state 132
+
+   74 comparison: comparison . GREATER comparison
+   75           | comparison . LESS comparison
+   75           | comparison LESS comparison .
+   76           | comparison . GREATER_EQUAL comparison
+   77           | comparison . LESS_EQUAL comparison
+
+    GREATER        shift, and go to state 91
+    LESS           shift, and go to state 92
+    GREATER_EQUAL  shift, and go to state 93
+    LESS_EQUAL     shift, and go to state 94
+
+    GREATER        [reduce using rule 75 (comparison)]
+    LESS           [reduce using rule 75 (comparison)]
+    GREATER_EQUAL  [reduce using rule 75 (comparison)]
+    LESS_EQUAL     [reduce using rule 75 (comparison)]
+    $default       reduce using rule 75 (comparison)
+
+
+state 133
+
+   74 comparison: comparison . GREATER comparison
+   75           | comparison . LESS comparison
+   76           | comparison . GREATER_EQUAL comparison
+   76           | comparison GREATER_EQUAL comparison .
+   77           | comparison . LESS_EQUAL comparison
+
+    GREATER        shift, and go to state 91
+    LESS           shift, and go to state 92
+    GREATER_EQUAL  shift, and go to state 93
+    LESS_EQUAL     shift, and go to state 94
+
+    GREATER        [reduce using rule 76 (comparison)]
+    LESS           [reduce using rule 76 (comparison)]
+    GREATER_EQUAL  [reduce using rule 76 (comparison)]
+    LESS_EQUAL     [reduce using rule 76 (comparison)]
+    $default       reduce using rule 76 (comparison)
+
+
+state 134
+
+   74 comparison: comparison . GREATER comparison
+   75           | comparison . LESS comparison
+   76           | comparison . GREATER_EQUAL comparison
+   77           | comparison . LESS_EQUAL comparison
+   77           | comparison LESS_EQUAL comparison .
+
+    GREATER        shift, and go to state 91
+    LESS           shift, and go to state 92
+    GREATER_EQUAL  shift, and go to state 93
+    LESS_EQUAL     shift, and go to state 94
+
+    GREATER        [reduce using rule 77 (comparison)]
+    LESS           [reduce using rule 77 (comparison)]
+    GREATER_EQUAL  [reduce using rule 77 (comparison)]
+    LESS_EQUAL     [reduce using rule 77 (comparison)]
+    $default       reduce using rule 77 (comparison)
+
+
+state 135
+
+   79 term: factor PLUS term .
+
+    $default  reduce using rule 79 (term)
+
+
+state 136
+
+   80 term: factor MINUS term .
+
+    $default  reduce using rule 80 (term)
+
+
+state 137
+
+   82 factor: exponent STAR factor .
+
+    $default  reduce using rule 82 (factor)
+
+
+state 138
+
+   83 factor: exponent SLASH factor .
+
+    $default  reduce using rule 83 (factor)
+
+
+state 139
+
+   84 factor: exponent MOD factor .
+
+    $default  reduce using rule 84 (factor)
+
+
+state 140
+
+   86 exponent: unary STAR_STAR exponent .
+
+    $default  reduce using rule 86 (exponent)
+
+
+state 141
+
+   91 call: primary LPAREN arg_list . RPAREN
+
+    RPAREN  shift, and go to state 159
+
+
+state 142
+
+    5 input: INPUT IDENTIFIER COLON type EQUAL . expr NEW_LINE
+
+    INT_LITERAL     shift, and go to state 7
+    FLOAT_LITERAL   shift, and go to state 8
+    BOOL_LITERAL    shift, and go to state 9
+    STRING_LITERAL  shift, and go to state 10
+    IDENTIFIER      shift, and go to state 11
+    MINUS           shift, and go to state 20
+    LBRACKET        shift, and go to state 21
+    BANG            shift, and go to state 22
+
+    expr        go to state 160
+    assignment  go to state 38
+    ternary     go to state 39
+    or          go to state 40
+    and         go to state 41
+    equality    go to state 42
+    comparison  go to state 43
+    term        go to state 44
+    factor      go to state 45
+    exponent    go to state 46
+    unary       go to state 47
+    call        go to state 48
+    primary     go to state 49
+    array       go to state 50
+
+
+state 143
+
+    6 input: INPUT IDENTIFIER COLON type NEW_LINE .
+
+    $default  reduce using rule 6 (input)
+
+
+state 144
+
+   52 type: type_identifier LBRACKET . RBRACKET
+
+    RBRACKET  shift, and go to state 161
+
+
+state 145
+
+   59 var_decl: LET IDENTIFIER COLON type . EQUAL expr
+
+    EQUAL  shift, and go to state 162
+
+
+state 146
+
+   46 param_list: IDENTIFIER . COLON type
+   47           | IDENTIFIER . COMMA type param_list
+
+    COLON  shift, and go to state 163
+    COMMA  shift, and go to state 164
+
+
+state 147
+
+   45 fn_decl: FUN IDENTIFIER LPAREN param_list . RPAREN TYPE_ARROW type COLON NEW_LINE block
+
+    RPAREN  shift, and go to state 165
+
+
+state 148
+
+   40 if_stmt: IF expr COLON NEW_LINE . block
+   41        | IF expr COLON NEW_LINE . block ELSE COLON NEW_LINE block
+
+    INDENT  shift, and go to state 23
+
+    block  go to state 166
+
+
+state 149
+
+   39 for_in_stmt: FOR IDENTIFIER IN expr . COLON NEW_LINE block
+   65 ternary: expr . QUESTION_MARK expr COLON expr
+
+    COLON          shift, and go to state 167
+    QUESTION_MARK  shift, and go to state 85
+
+
+state 150
+
+   42 while_stmt: WHILE expr COLON NEW_LINE . block
+
+    INDENT  shift, and go to state 23
+
+    block  go to state 168
+
+
+state 151
+
+   94 arg_list: expr COMMA arg_list .
+
+    $default  reduce using rule 94 (arg_list)
+
+
+state 152
+
+   15 behavior_node: IDENTIFIER LPAREN arg_list . RPAREN NEW_LINE
+
+    RPAREN  shift, and go to state 169
+
+
+state 153
+
+   19 at_if_stmt: AT_IF expr COLON . NEW_LINE children
+   20 at_if_else_stmt: AT_IF expr COLON . NEW_LINE children AT_ELSE COLON NEW_LINE children
+
+    NEW_LINE  shift, and go to state 170
+
+
+state 154
+
+   21 at_for_stmt: AT_FOR IDENTIFIER IN . IDENTIFIER COLON NEW_LINE children
+
+    IDENTIFIER  shift, and go to state 171
+
+
+state 155
+
+   12 and_node: AND COLON NEW_LINE . children
+
+    INDENT  shift, and go to state 172
+
+    children  go to state 173
+
+
+state 156
+
+   14 then_node: THEN COLON NEW_LINE . children
+
+    INDENT  shift, and go to state 172
+
+    children  go to state 174
+
+
+state 157
+
+   13 or_node: OR COLON NEW_LINE . children
+
+    INDENT  shift, and go to state 172
+
+    children  go to state 175
+
+
+state 158
+
+   65 ternary: expr QUESTION_MARK expr COLON . expr
+
+    INT_LITERAL     shift, and go to state 7
+    FLOAT_LITERAL   shift, and go to state 8
+    BOOL_LITERAL    shift, and go to state 9
+    STRING_LITERAL  shift, and go to state 10
+    IDENTIFIER      shift, and go to state 11
+    MINUS           shift, and go to state 20
+    LBRACKET        shift, and go to state 21
+    BANG            shift, and go to state 22
+
+    expr        go to state 176
+    assignment  go to state 38
+    ternary     go to state 39
+    or          go to state 40
+    and         go to state 41
+    equality    go to state 42
+    comparison  go to state 43
+    term        go to state 44
+    factor      go to state 45
+    exponent    go to state 46
+    unary       go to state 47
+    call        go to state 48
+    primary     go to state 49
+    array       go to state 50
+
+
+state 159
+
+   91 call: primary LPAREN arg_list RPAREN .
+
+    $default  reduce using rule 91 (call)
+
+
+state 160
+
+    5 input: INPUT IDENTIFIER COLON type EQUAL expr . NEW_LINE
+   65 ternary: expr . QUESTION_MARK expr COLON expr
+
+    QUESTION_MARK  shift, and go to state 85
+    NEW_LINE       shift, and go to state 177
+
+
+state 161
+
+   52 type: type_identifier LBRACKET RBRACKET .
+
+    $default  reduce using rule 52 (type)
+
+
+state 162
+
+   59 var_decl: LET IDENTIFIER COLON type EQUAL . expr
+
+    INT_LITERAL     shift, and go to state 7
+    FLOAT_LITERAL   shift, and go to state 8
+    BOOL_LITERAL    shift, and go to state 9
+    STRING_LITERAL  shift, and go to state 10
+    IDENTIFIER      shift, and go to state 11
+    MINUS           shift, and go to state 20
+    LBRACKET        shift, and go to state 21
+    BANG            shift, and go to state 22
+
+    expr        go to state 178
+    assignment  go to state 38
+    ternary     go to state 39
+    or          go to state 40
+    and         go to state 41
+    equality    go to state 42
+    comparison  go to state 43
+    term        go to state 44
+    factor      go to state 45
+    exponent    go to state 46
+    unary       go to state 47
+    call        go to state 48
+    primary     go to state 49
+    array       go to state 50
+
+
+state 163
+
+   46 param_list: IDENTIFIER COLON . type
+
+    INT     shift, and go to state 102
+    FLOAT   shift, and go to state 103
+    STRING  shift, and go to state 104
+    BOOL    shift, and go to state 105
+    VOID    shift, and go to state 106
+    NONE    shift, and go to state 107
+
+    type             go to state 179
+    type_identifier  go to state 109
+
+
+state 164
+
+   47 param_list: IDENTIFIER COMMA . type param_list
+
+    INT     shift, and go to state 102
+    FLOAT   shift, and go to state 103
+    STRING  shift, and go to state 104
+    BOOL    shift, and go to state 105
+    VOID    shift, and go to state 106
+    NONE    shift, and go to state 107
+
+    type             go to state 180
+    type_identifier  go to state 109
+
+
+state 165
+
+   45 fn_decl: FUN IDENTIFIER LPAREN param_list RPAREN . TYPE_ARROW type COLON NEW_LINE block
+
+    TYPE_ARROW  shift, and go to state 181
+
+
+state 166
+
+   40 if_stmt: IF expr COLON NEW_LINE block .
+   41        | IF expr COLON NEW_LINE block . ELSE COLON NEW_LINE block
+
+    ELSE  shift, and go to state 182
+
+    $default  reduce using rule 40 (if_stmt)
+
+
+state 167
+
+   39 for_in_stmt: FOR IDENTIFIER IN expr COLON . NEW_LINE block
+
+    NEW_LINE  shift, and go to state 183
+
+
+state 168
+
+   42 while_stmt: WHILE expr COLON NEW_LINE block .
+
+    $default  reduce using rule 42 (while_stmt)
+
+
+state 169
+
+   15 behavior_node: IDENTIFIER LPAREN arg_list RPAREN . NEW_LINE
+
+    NEW_LINE  shift, and go to state 184
+
+
+state 170
+
+   19 at_if_stmt: AT_IF expr COLON NEW_LINE . children
+   20 at_if_else_stmt: AT_IF expr COLON NEW_LINE . children AT_ELSE COLON NEW_LINE children
+
+    INDENT  shift, and go to state 172
+
+    children  go to state 185
+
+
+state 171
+
+   21 at_for_stmt: AT_FOR IDENTIFIER IN IDENTIFIER . COLON NEW_LINE children
+
+    COLON  shift, and go to state 186
+
+
+state 172
+
+   22 children: INDENT . node_list DEDENT
+   23         | INDENT . node_list OUTDENT
+
+    IDENTIFIER  shift, and go to state 65
+    AT_IF       shift, and go to state 66
+    AT_FOR      shift, and go to state 67
+    AND         shift, and go to state 68
+    THEN        shift, and go to state 69
+    OR          shift, and go to state 70
+
+    tree             go to state 187
+    and_node         go to state 72
+    or_node          go to state 73
+    then_node        go to state 74
+    behavior_node    go to state 75
+    pseudo_node      go to state 76
+    at_if_stmt       go to state 77
+    at_if_else_stmt  go to state 78
+    at_for_stmt      go to state 79
+    node_list        go to state 188
+
+
+state 173
+
+   12 and_node: AND COLON NEW_LINE children .
+
+    $default  reduce using rule 12 (and_node)
+
+
+state 174
+
+   14 then_node: THEN COLON NEW_LINE children .
+
+    $default  reduce using rule 14 (then_node)
+
+
+state 175
+
+   13 or_node: OR COLON NEW_LINE children .
+
+    $default  reduce using rule 13 (or_node)
+
+
+state 176
+
+   65 ternary: expr . QUESTION_MARK expr COLON expr
+   65        | expr QUESTION_MARK expr COLON expr .
+
+    QUESTION_MARK  shift, and go to state 85
+
+    QUESTION_MARK  [reduce using rule 65 (ternary)]
+    $default       reduce using rule 65 (ternary)
+
+
+state 177
+
+    5 input: INPUT IDENTIFIER COLON type EQUAL expr NEW_LINE .
+
+    $default  reduce using rule 5 (input)
+
+
+state 178
+
+   59 var_decl: LET IDENTIFIER COLON type EQUAL expr .
+   65 ternary: expr . QUESTION_MARK expr COLON expr
+
+    QUESTION_MARK  shift, and go to state 85
+
+    $default  reduce using rule 59 (var_decl)
+
+
+state 179
+
+   46 param_list: IDENTIFIER COLON type .
+
+    $default  reduce using rule 46 (param_list)
+
+
+state 180
+
+   47 param_list: IDENTIFIER COMMA type . param_list
+
+    IDENTIFIER  shift, and go to state 146
+
+    $default  reduce using rule 48 (param_list)
+
+    param_list  go to state 189
+
+
+state 181
+
+   45 fn_decl: FUN IDENTIFIER LPAREN param_list RPAREN TYPE_ARROW . type COLON NEW_LINE block
+
+    INT     shift, and go to state 102
+    FLOAT   shift, and go to state 103
+    STRING  shift, and go to state 104
+    BOOL    shift, and go to state 105
+    VOID    shift, and go to state 106
+    NONE    shift, and go to state 107
+
+    type             go to state 190
+    type_identifier  go to state 109
+
+
+state 182
+
+   41 if_stmt: IF expr COLON NEW_LINE block ELSE . COLON NEW_LINE block
+
+    COLON  shift, and go to state 191
+
+
+state 183
+
+   39 for_in_stmt: FOR IDENTIFIER IN expr COLON NEW_LINE . block
+
+    INDENT  shift, and go to state 23
+
+    block  go to state 192
+
+
+state 184
+
+   15 behavior_node: IDENTIFIER LPAREN arg_list RPAREN NEW_LINE .
+
+    $default  reduce using rule 15 (behavior_node)
+
+
+state 185
+
+   19 at_if_stmt: AT_IF expr COLON NEW_LINE children .
+   20 at_if_else_stmt: AT_IF expr COLON NEW_LINE children . AT_ELSE COLON NEW_LINE children
+
+    AT_ELSE  shift, and go to state 193
+
+    $default  reduce using rule 19 (at_if_stmt)
+
+
+state 186
+
+   21 at_for_stmt: AT_FOR IDENTIFIER IN IDENTIFIER COLON . NEW_LINE children
+
+    NEW_LINE  shift, and go to state 194
+
+
+state 187
+
+   24 node_list: tree .
+   25          | tree . node_list
+
+    IDENTIFIER  shift, and go to state 65
+    AT_IF       shift, and go to state 66
+    AT_FOR      shift, and go to state 67
+    AND         shift, and go to state 68
+    THEN        shift, and go to state 69
+    OR          shift, and go to state 70
+
+    $default  reduce using rule 24 (node_list)
+
+    tree             go to state 187
+    and_node         go to state 72
+    or_node          go to state 73
+    then_node        go to state 74
+    behavior_node    go to state 75
+    pseudo_node      go to state 76
+    at_if_stmt       go to state 77
+    at_if_else_stmt  go to state 78
+    at_for_stmt      go to state 79
+    node_list        go to state 195
+
+
+state 188
+
+   22 children: INDENT node_list . DEDENT
+   23         | INDENT node_list . OUTDENT
+
+    DEDENT   shift, and go to state 196
+    OUTDENT  shift, and go to state 197
+
+
+state 189
+
+   47 param_list: IDENTIFIER COMMA type param_list .
+
+    $default  reduce using rule 47 (param_list)
+
+
+state 190
+
+   45 fn_decl: FUN IDENTIFIER LPAREN param_list RPAREN TYPE_ARROW type . COLON NEW_LINE block
+
+    COLON  shift, and go to state 198
+
+
+state 191
+
+   41 if_stmt: IF expr COLON NEW_LINE block ELSE COLON . NEW_LINE block
+
+    NEW_LINE  shift, and go to state 199
+
+
+state 192
+
+   39 for_in_stmt: FOR IDENTIFIER IN expr COLON NEW_LINE block .
+
+    $default  reduce using rule 39 (for_in_stmt)
+
+
+state 193
+
+   20 at_if_else_stmt: AT_IF expr COLON NEW_LINE children AT_ELSE . COLON NEW_LINE children
+
+    COLON  shift, and go to state 200
+
+
+state 194
+
+   21 at_for_stmt: AT_FOR IDENTIFIER IN IDENTIFIER COLON NEW_LINE . children
+
+    INDENT  shift, and go to state 172
+
+    children  go to state 201
+
+
+state 195
+
+   25 node_list: tree node_list .
+
+    $default  reduce using rule 25 (node_list)
+
+
+state 196
+
+   22 children: INDENT node_list DEDENT .
+
+    $default  reduce using rule 22 (children)
+
+
+state 197
+
+   23 children: INDENT node_list OUTDENT .
+
+    $default  reduce using rule 23 (children)
+
+
+state 198
+
+   45 fn_decl: FUN IDENTIFIER LPAREN param_list RPAREN TYPE_ARROW type COLON . NEW_LINE block
+
+    NEW_LINE  shift, and go to state 202
+
+
+state 199
+
+   41 if_stmt: IF expr COLON NEW_LINE block ELSE COLON NEW_LINE . block
+
+    INDENT  shift, and go to state 23
+
+    block  go to state 203
+
+
+state 200
+
+   20 at_if_else_stmt: AT_IF expr COLON NEW_LINE children AT_ELSE COLON . NEW_LINE children
+
+    NEW_LINE  shift, and go to state 204
+
+
+state 201
+
+   21 at_for_stmt: AT_FOR IDENTIFIER IN IDENTIFIER COLON NEW_LINE children .
+
+    $default  reduce using rule 21 (at_for_stmt)
+
+
+state 202
+
+   45 fn_decl: FUN IDENTIFIER LPAREN param_list RPAREN TYPE_ARROW type COLON NEW_LINE . block
+
+    INDENT  shift, and go to state 23
+
+    block  go to state 205
+
+
+state 203
+
+   41 if_stmt: IF expr COLON NEW_LINE block ELSE COLON NEW_LINE block .
+
+    $default  reduce using rule 41 (if_stmt)
+
+
+state 204
+
+   20 at_if_else_stmt: AT_IF expr COLON NEW_LINE children AT_ELSE COLON NEW_LINE . children
+
+    INDENT  shift, and go to state 172
+
+    children  go to state 206
+
+
+state 205
+
+   45 fn_decl: FUN IDENTIFIER LPAREN param_list RPAREN TYPE_ARROW type COLON NEW_LINE block .
+
+    $default  reduce using rule 45 (fn_decl)
+
+
+state 206
+
+   20 at_if_else_stmt: AT_IF expr COLON NEW_LINE children AT_ELSE COLON NEW_LINE children .
+
+    $default  reduce using rule 20 (at_if_else_stmt)

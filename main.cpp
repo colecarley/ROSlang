@@ -2,6 +2,7 @@
 #include <fstream>
 #include "parser.hpp"
 #include "ast.hpp"
+#include "visitor.hpp"
 
 void ros_parse(ASTNode **root, const char *source);
 
