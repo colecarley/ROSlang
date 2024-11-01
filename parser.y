@@ -1,7 +1,7 @@
 %{
+    #include "ast.hpp"
     #include <iostream>
     #include <string>
-    #include "ast.hpp"
 
     void yyerror(ASTNode** root, const char* s);
     void ros_parse(ASTNode** root, const char* code);
@@ -19,6 +19,7 @@
     bool boolval;
     char* strval;
     char* id;
+    ASTNode* node;
 }
 
 %token <intval> INT_LITERAL
@@ -80,6 +81,8 @@
 %token BOOL;
 %token VOID;
 %token NONE;
+
+%type <node> program stmt_list stmt block expr assignment ternary or and equality comparison term factor exponent unary call arg_list primary array type_identifier type var_decl fn_decl param_list return_stmt if_stmt while_stmt for_in_stmt break_stmt continue_stmt at_if_stmt at_if_else_stmt at_for_stmt children node_list tree and_node or_node then_node behavior_node pseudo_node
 
 %%
 
@@ -301,7 +304,7 @@ arg_list:
     ;
 
 primary:
-    INT_LITERAL 
+    INT_LITERAL { $$ = new IntLiteral($1); }
     | FLOAT_LITERAL 
     | STRING_LITERAL 
     | BOOL_LITERAL 

@@ -213,18 +213,44 @@ struct CallExpr : Expr
     CallExpr(std::string identifier, std::vector<Expr *> args) : identifier(identifier), args(args) {}
 };
 
-struct ArrayExpr : Expr
+struct ArrayLiteral : Expr
 {
     std::vector<Expr *> elements;
 
-    ArrayExpr(std::vector<Expr *> elements) : elements(elements) {}
+    ArrayLiteral(std::vector<Expr *> elements) : elements(elements) {}
 };
 
-struct LiteralExpr : Expr
+struct IntLiteral : Expr
 {
-    std::string literal;
+    int value;
 
-    LiteralExpr(std::string literal) : literal(literal) {}
+    IntLiteral(int value) : value(value) {}
+};
+
+struct FloatLiteral : Expr
+{
+    float value;
+
+    FloatLiteral(float value) : value(value) {}
+};
+
+struct StringLiteral : Expr
+{
+    std::string value;
+
+    StringLiteral(std::string value) : value(value) {}
+};
+
+struct NoneLiteral : Expr
+{
+    NoneLiteral() {}
+};
+
+struct BoolLiteral : Expr
+{
+    bool value;
+
+    BoolLiteral(bool value) : value(value) {}
 };
 
 struct IdentifierExpr : Expr
