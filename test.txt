@@ -1,9 +1,15 @@
-# i am here
-    # i am here indent
+input foobar: int = 3
+input shoebar: string
+
+if true:
+    1 + 1
+else:
+    2 + 2
 
 1 + 1
     1 + 1
         1 + 1
+        let a: int = 3
         a = 2
         let b: int = 3
         let c: float = true ? 1 : 3
@@ -12,42 +18,44 @@
             1 + 1
             return
 
+fun shoebar() -> string: # TODO: fix type checking
+    return 3 
 
-fun foobar() -> string:
-    1 + 1 # comment
-    return 3
+shoebar()
 
 if true:
     1 + 1
 else:
     2 + 2
 
-for x in foobar:
+for x in [1]:
     x
     break
 
 while true:
+    break
     continue
 
-let x: int[] = [1,2,3,4]
+
+let x: int[] = [1,2]
 
 AND:
     behavior()
+    behavior()
+    OR:
+        behavior()
+        behavior()
     THEN:
         behavior()
         behavior()
         behavior()
         behavior()
-    OR:
+    @for i in x:
         behavior()
-
-    @if x < 3:
-        OR:
-            behavior()
-            behavior()
-    @else:
-        THEN:
-            behavior()
-            behavior()
-    @for x in y:
         behavior()
+        behavior()
+        @if true:
+            behavior()
+            behavior()
+        @else:
+            behavior()
