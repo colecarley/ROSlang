@@ -56,10 +56,9 @@ struct PrimitiveType;
 struct ArrayType;
 
 // helper structs
-struct StmtList;
+template <typename T>
+struct List;
 struct IdentifierType;
-struct IdentifierTypeList;
-struct ExprList;
 
 // others
 struct Program;
@@ -643,22 +642,27 @@ struct AtForNode : PseudoNode
 };
 
 // helper structs
-struct StmtList
-{
-    std::vector<std::unique_ptr<Stmt>> stmts;
 
-    StmtList(std::vector<Stmt *> stmts)
+template <typename T>
+struct List
+{
+    std::vector<std::unique_ptr<T>> items = {};
+
+    List(std::vector<T *> items)
     {
-        for (auto &stmt : stmts)
+        for (auto &item : items)
         {
-            this->stmts.push_back(std::unique_ptr<Stmt>(stmt));
+            this->items.push_back(std::unique_ptr<T>(item));
         }
     }
-    StmtList(std::vector<std::unique_ptr<Stmt>> stmts) : stmts(std::move(stmts)) {}
 
-    void add(Stmt *stmt)
+    List(std::vector<std::unique_ptr<T>> items) : items(std::move(items)) {}
+
+    List() {}
+
+    void add(T *item)
     {
-        stmts.push_back(std::unique_ptr<Stmt>(stmt));
+        items.push_back(std::unique_ptr<T>(item));
     }
 };
 
@@ -669,85 +673,4 @@ struct IdentifierType
 
     IdentifierType(std::string identifier, Type *type) : identifier(identifier), type(type) {}
     IdentifierType(std::string identifier, std::unique_ptr<Type> type) : identifier(identifier), type(std::move(type)) {}
-};
-
-struct IdentifierTypeList
-{
-    std::vector<std::unique_ptr<IdentifierType>> pairs = {};
-
-    IdentifierTypeList(std::vector<IdentifierType *> pairs)
-    {
-        for (auto &pair : pairs)
-        {
-            this->pairs.push_back(std::unique_ptr<IdentifierType>(pair));
-        }
-    }
-    IdentifierTypeList(std::vector<std::unique_ptr<IdentifierType>> pairs) : pairs(std::move(pairs)) {}
-    IdentifierTypeList() {}
-
-    void add(IdentifierType *pair)
-    {
-        pairs.push_back(std::unique_ptr<IdentifierType>(pair));
-    }
-};
-struct ExprList
-{
-    std::vector<std::unique_ptr<Expr>> exprs = {};
-
-    ExprList(std::vector<Expr *> exprs)
-    {
-        for (auto &expr : exprs)
-        {
-            this->exprs.push_back(std::unique_ptr<Expr>(expr));
-        }
-    }
-    ExprList(std::vector<std::unique_ptr<Expr>> exprs) : exprs(std::move(exprs)) {}
-    ExprList() {}
-
-    void add(Expr *expr)
-    {
-        exprs.push_back(std::unique_ptr<Expr>(expr));
-    }
-};
-
-struct TreeNodeList
-{
-    std::vector<std::unique_ptr<TreeNode>> children = {};
-
-    TreeNodeList(std::vector<TreeNode *> children)
-    {
-        for (auto &child : children)
-        {
-            this->children.push_back(std::unique_ptr<TreeNode>(child));
-        }
-    }
-    TreeNodeList(std::vector<std::unique_ptr<TreeNode>> children) : children(std::move(children)) {}
-
-    TreeNodeList() {}
-
-    void add(TreeNode *child)
-    {
-        children.push_back(std::unique_ptr<TreeNode>(child));
-    }
-};
-
-struct InputList
-{
-    std::vector<std::unique_ptr<Input>> inputs = {};
-
-    InputList(std::vector<Input *> inputs)
-    {
-        for (auto &input : inputs)
-        {
-            this->inputs.push_back(std::unique_ptr<Input>(input));
-        }
-    }
-    InputList(std::vector<std::unique_ptr<Input>> inputs) : inputs(std::move(inputs)) {}
-
-    InputList() {}
-
-    void add(Input *input)
-    {
-        inputs.push_back(std::unique_ptr<Input>(input));
-    }
 };

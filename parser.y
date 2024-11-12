@@ -20,19 +20,19 @@
     bool boolval;
     char* strval;
     char* id;
-    ExprList* expr_list;
+    List<Expr>* expr_list;
     Expr* expr;
-    StmtList* stmt_list;
+    List<Stmt>* stmt_list;
     Stmt* stmt;
     IdentifierType* identifier_type;
-    IdentifierTypeList* identifier_type_list;
+    List<IdentifierType>* identifier_type_list;
     Type* type;
     BlockStmt* block_stmt;
     Program* program;
     TreeNode* tree_node;
-    TreeNodeList* tree_node_list;
-    InputList* input_list;
+    List<TreeNode>* tree_node_list;
     Input* input;
+    List<Input>* input_list;
     InputDefault* input_default;
 }
 
@@ -111,12 +111,12 @@
 %%
 
 program:
-    input_list stmt_list tree  { *program = new Program(std::move($1->inputs), std::move($2->stmts), $3); }
+    input_list stmt_list tree  { *program = new Program(std::move($1->items), std::move($2->items), $3); }
     ;
 
 input_list:
     input_list input { $1->add($2); $$ = $1; }
-    | input { $$ = new InputList({$1}); }
+    | input { $$ = new List<Input>({$1}); }
     | 
     ;
 
@@ -134,19 +134,19 @@ tree:
     ;
 
 and_node:
-    AND COLON NEW_LINE children {  $$ = new AndNode(std::move($4->children)); }
+    AND COLON NEW_LINE children {  $$ = new AndNode(std::move($4->items)); }
     ;
 
 or_node:
-    OR COLON NEW_LINE children { $$ = new OrNode(std::move($4->children)); }
+    OR COLON NEW_LINE children { $$ = new OrNode(std::move($4->items)); }
     ;
 
 then_node:
-    THEN COLON NEW_LINE children { $$ = new ThenNode(std::move($4->children)); }
+    THEN COLON NEW_LINE children { $$ = new ThenNode(std::move($4->items)); }
     ;
 
 behavior_node:
-    IDENTIFIER LPAREN arg_list RPAREN  {  $$ = new BehaviorNode($1, std::move($3->exprs)); }
+    IDENTIFIER LPAREN arg_list RPAREN  {  $$ = new BehaviorNode($1, std::move($3->items)); }
 
 pseudo_node:
     at_if_stmt
@@ -155,15 +155,15 @@ pseudo_node:
     ;
 
 at_if_stmt:
-    AT_IF expr COLON NEW_LINE children { $$ = new AtIfNode($2, std::move($5->children)); }
+    AT_IF expr COLON NEW_LINE children { $$ = new AtIfNode($2, std::move($5->items)); }
     ;
 
 at_if_else_stmt:
-    AT_IF expr COLON NEW_LINE children AT_ELSE COLON NEW_LINE children { $$ = new AtIfElseNode($2, std::move($5->children), std::move($9->children)); }
+    AT_IF expr COLON NEW_LINE children AT_ELSE COLON NEW_LINE children { $$ = new AtIfElseNode($2, std::move($5->items), std::move($9->items)); }
     ;
 
 at_for_stmt:
-    AT_FOR IDENTIFIER IN expr COLON NEW_LINE children { $$ = new AtForNode($2, $4, std::move($7->children)); }
+    AT_FOR IDENTIFIER IN expr COLON NEW_LINE children { $$ = new AtForNode($2, $4, std::move($7->items)); }
     ;
 
 children:
@@ -172,13 +172,13 @@ children:
     ;
 
 node_list:
-    tree {  $$ = new TreeNodeList({$1}); }
+    tree {  $$ = new List<TreeNode>({$1}); }
     | tree node_list { $2->add($1); $$ = $2; }
     |
     ; 
 
 stmt_list:
-    stmt { $$ = new StmtList({$1}); }
+    stmt { $$ = new List<Stmt>({$1}); }
     | stmt stmt_list { $2->add($1); $$ = $2; }
     ;
 
@@ -217,13 +217,13 @@ continue_stmt:
     ;
 
 fn_decl:
-    FUN IDENTIFIER LPAREN param_list RPAREN TYPE_ARROW type COLON NEW_LINE block { $$ = new FnDecl($2, std::move($4->pairs), $7, $10); }
+    FUN IDENTIFIER LPAREN param_list RPAREN TYPE_ARROW type COLON NEW_LINE block { $$ = new FnDecl($2, std::move($4->items), $7, $10); }
     ;
 
 param_list:
-    IDENTIFIER COLON type { $$ = new IdentifierTypeList({new IdentifierType($1, $3)}); }
+    IDENTIFIER COLON type { $$ = new List<IdentifierType>({new IdentifierType($1, $3)}); }
     | IDENTIFIER COMMA type param_list { $4->add(new IdentifierType($1, $3)); $$ = $4; }
-    | { $$ = new IdentifierTypeList(); }
+    | { $$ = new List<IdentifierType>(); }
     ;
 
 return_stmt:
@@ -250,8 +250,8 @@ var_decl:
     ;
 
 block:
-    INDENT stmt_list DEDENT { $$ = new BlockStmt(std::move($2->stmts)); }
-    | INDENT stmt_list OUTDENT  { $$ = new BlockStmt(std::move($2->stmts)); }
+    INDENT stmt_list DEDENT { $$ = new BlockStmt(std::move($2->items)); }
+    | INDENT stmt_list OUTDENT  { $$ = new BlockStmt(std::move($2->items)); }
     ; 
 
 expr:
@@ -317,14 +317,14 @@ unary:
     ;
 
 call:
-    IDENTIFIER LPAREN arg_list RPAREN { $$ = new CallExpr($1, std::move($3->exprs)); }
+    IDENTIFIER LPAREN arg_list RPAREN { $$ = new CallExpr($1, std::move($3->items)); }
     | primary
     ;
 
 arg_list:
-    expr { $$ = new ExprList({$1}); }
+    expr { $$ = new List<Expr>({$1}); }
     | expr COMMA arg_list  { $3->add($1); $$ = $3; }
-    | { $$ = new ExprList(); }
+    | { $$ = new List<Expr>(); }
     ;
 
 primary:
@@ -337,7 +337,7 @@ primary:
     ;
 
 array:
-    LBRACKET arg_list RBRACKET { $$ = new ArrayLiteral(std::move($2->exprs)); }
+    LBRACKET arg_list RBRACKET { $$ = new ArrayLiteral(std::move($2->items)); }
     ;
 
 %%
