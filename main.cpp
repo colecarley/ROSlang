@@ -65,7 +65,10 @@ int main(int argc, char *argv[])
     Interpreter interpreter;
     interpreter.evaluate(root);
 
-    print_tree(interpreter.root.get());
+    for (auto &root : interpreter.roots)
+    {
+        print_tree(root.get());
+    }
 
     return 0;
 }

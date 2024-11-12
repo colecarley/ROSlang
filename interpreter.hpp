@@ -16,14 +16,13 @@ struct Interpreter : Visitor
     Stack<Value> stack;
     Stack<std::shared_ptr<DHTT::Node>> node_stack;
     Environment<Value> env;
-    std::shared_ptr<DHTT::Node> root;
+    std::vector<std::shared_ptr<DHTT::Node>> roots;
     std::shared_ptr<DHTT::Node> current_root;
 
     Interpreter()
     {
         env.push_env();
-        root = std::shared_ptr<DHTT::Node>(new DHTT::Then());
-        current_root = root;
+        current_root = nullptr;
     }
 
     void evaluate(Program *program)
@@ -43,7 +42,7 @@ struct Interpreter : Visitor
 
         for (int i = 0; i < node_stack.stack.size(); i++)
         {
-            root->add(std::move(node_stack.pop()));
+            this->roots.push_back(std::move(node_stack.pop()));
         }
     }
 
