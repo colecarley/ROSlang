@@ -22,27 +22,7 @@ void print_tree(DHTT::Node *root, int indent = 0)
         std::cout << "  ";
     }
 
-    if (auto andNode = dynamic_cast<DHTT::And *>(root))
-    {
-        std::cout << "AndNode\n";
-    }
-    else if (auto orNode = dynamic_cast<DHTT::Or *>(root))
-    {
-        std::cout << "OrNode\n";
-    }
-    else if (auto thenNode = dynamic_cast<DHTT::Then *>(root))
-    {
-        std::cout << "thenNode\n";
-    }
-    else if (auto behaviorNode = dynamic_cast<DHTT::Behavior *>(root))
-    {
-        std::cout << "behaviorNode\n";
-    }
-    else
-    {
-        std::cerr << "Unknown node type" << std::endl;
-        exit(1);
-    }
+    root->sayName();
 
     for (auto &child : root->children)
     {
