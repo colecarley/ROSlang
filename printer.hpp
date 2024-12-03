@@ -106,10 +106,24 @@ struct Printer : Visitor
         }
     }
 
+    virtual void visit(LambdaExpr *expr) override
+    {
+        std::cout << "LambdaExpr\n";
+        expr->expr->accept(this);
+    }
+
     virtual void visit(AssignExpr *expr) override
     {
         std::cout << "AssignExpr\n";
 
+        expr->value->accept(this);
+    }
+
+    virtual void visit(ArrayAssignExpr *expr) override
+    {
+        std::cout << "ArrayAssignExpr\n";
+
+        expr->index->accept(this);
         expr->value->accept(this);
     }
 
@@ -145,6 +159,13 @@ struct Printer : Visitor
         {
             arg->accept(this);
         }
+    }
+
+    virtual void visit(ArrayAccessExpr *expr) override
+    {
+        std::cout << "ArrayAccessExpr\n";
+
+        expr->index->accept(this);
     }
 
     virtual void visit(IntLiteral *expr) override

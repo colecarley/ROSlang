@@ -1,4 +1,5 @@
 #pragma once
+
 #include "ast.hpp"
 #include <vector>
 #include <unordered_map>
@@ -6,9 +7,12 @@
 #include <functional>
 #include "dhtt.hpp"
 #include "exceptions/index.hpp"
-#include "value.hpp"
 #include "stack.hpp"
 #include "environment.hpp"
+#include "array.hpp"
+#include "standard_lib.hpp"
+#include "value.hpp"
+#include "callable.hpp"
 
 struct Interpreter : Visitor
 {
@@ -230,6 +234,12 @@ struct Interpreter : Visitor
                     } });
     }
 
+    virtual void visit(LambdaExpr *expr) override
+    {
+        auto callable = new Callable(expr);
+        stack.push(Value(callable));
+    }
+
     virtual void visit(AssignExpr *expr) override
     {
         if (!env.contains(expr->identifier))
@@ -240,6 +250,34 @@ struct Interpreter : Visitor
 
         expr->value->accept(this);
         env.set(expr->identifier, stack.pop());
+    }
+
+    virtual void visit(ArrayAssignExpr *expr) override
+    {
+        if (!env.contains(expr->identifier))
+        {
+            std::cerr << "Variable " << expr->identifier << " not defined" << std::endl;
+            exit(1);
+        }
+
+        expr->index->accept(this);
+        auto index = stack.pop();
+
+        expr->value->accept(this);
+        auto value = stack.pop();
+
+        auto array_value = env.get(expr->identifier);
+        auto array = array_value.array;
+
+        if (index.type == MyType::MYINT)
+        {
+            array->set(index, value);
+        }
+        else
+        {
+            std::cerr << "Array index must be an integer" << std::endl;
+            exit(1);
+        }
     }
 
     virtual void visit(TernaryExpr *expr) override
@@ -354,8 +392,19 @@ struct Interpreter : Visitor
     {
         if (!env.contains(expr->identifier))
         {
-            std::cerr << "Function " << expr->identifier << " not defined" << std::endl;
-            exit(1);
+            if (expr->identifier == "print")
+            {
+
+                auto values = std::vector<Value>();
+                for (auto &arg : expr->args)
+                {
+                    arg->accept(this);
+                    values.push_back(stack.pop());
+                }
+
+                print(values);
+                return;
+            }
         }
 
         std::vector<Value> args;
@@ -367,6 +416,30 @@ struct Interpreter : Visitor
 
         auto callable = env.get(expr->identifier).callable;
         callable->call(this, args);
+    }
+
+    virtual void visit(ArrayAccessExpr *expr) override
+    {
+        if (!env.contains(expr->identifier))
+        {
+            std::cerr << "Variable " << expr->identifier << " not defined" << std::endl;
+            exit(1);
+        }
+        expr->index->accept(this);
+        auto index = stack.pop();
+
+        auto array_value = env.get(expr->identifier);
+        auto array = array_value.array;
+
+        if (index.type == MyType::MYINT)
+        {
+            stack.push((*array)[index]);
+        }
+        else
+        {
+            std::cerr << "Array index must be an integer" << std::endl;
+            exit(1);
+        }
     }
 
     virtual void visit(IntLiteral *expr) override
@@ -408,9 +481,9 @@ struct Interpreter : Visitor
     virtual void visit(ArrayLiteral *expr) override
     {
         std::vector<Value> elements;
-        for (auto &element : expr->elements)
+        for (auto it = expr->elements.rbegin(); it != expr->elements.rend(); ++it)
         {
-            element->accept(this);
+            it->get()->accept(this);
             elements.push_back(std::move(stack.pop()));
         }
 

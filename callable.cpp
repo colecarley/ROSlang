@@ -1,4 +1,4 @@
-#include "value.hpp"
+#include "callable.hpp"
 #include "interpreter.hpp"
 
 void Callable::call(Interpreter *interpreter, std::vector<Value> args)
@@ -7,12 +7,12 @@ void Callable::call(Interpreter *interpreter, std::vector<Value> args)
                               {
     for (int i = 0; i < args.size(); i++)
     {
-        interpreter->env.set(fn_decl->params[i]->identifier, args[i]);
+        interpreter->env.set(this->params[i]->identifier, args[i]);
     }
 
     try
     {
-        fn_decl->block->accept(interpreter);
+        this->block->accept(interpreter);
     }
     catch (ReturnException e)
     {

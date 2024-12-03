@@ -3,11 +3,14 @@
 
 // expr nodes
 struct Expr;
+struct LambdaExpr;
 struct AssignExpr;
+struct ArrayAssignExpr;
 struct TernaryExpr;
 struct BinaryExpr;
 struct UnaryExpr;
 struct CallExpr;
+struct ArrayAccessExpr;
 struct LiteralExpr;
 struct IdentifierExpr;
 struct ArrayLiteral;
@@ -62,11 +65,14 @@ struct Visitor
     virtual void visit(VarDecl *) = 0;
     virtual void visit(ExprStmt *) = 0;
     virtual void visit(BlockStmt *) = 0;
+    virtual void visit(LambdaExpr *) = 0;
+    virtual void visit(ArrayAssignExpr *) = 0;
     virtual void visit(AssignExpr *) = 0;
     virtual void visit(TernaryExpr *) = 0;
     virtual void visit(BinaryExpr *) = 0;
     virtual void visit(UnaryExpr *) = 0;
     virtual void visit(CallExpr *) = 0;
+    virtual void visit(ArrayAccessExpr *) = 0;
     virtual void visit(IntLiteral *) = 0;
     virtual void visit(FloatLiteral *) = 0;
     virtual void visit(StringLiteral *) = 0;

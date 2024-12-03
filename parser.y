@@ -34,6 +34,7 @@
     Input* input;
     List<Input>* input_list;
     InputDefault* input_default;
+    List<Type>* type_list;
 }
 
 %token <intval> INT_LITERAL
@@ -99,7 +100,7 @@
 %type <tree_node> tree and_node or_node then_node behavior_node pseudo_node at_if_stmt at_if_else_stmt at_for_stmt
 %type <tree_node_list> children node_list
 %type <expr_list> arg_list
-%type <expr> expr or and equality comparison term factor exponent unary call primary array assignment ternary
+%type <expr> expr or and equality comparison term factor exponent unary call primary array assignment ternary lambda
 %type <stmt_list> stmt_list 
 %type <identifier_type_list> param_list
 %type <type> type type_identifier
@@ -107,7 +108,7 @@
 %type <block_stmt> block
 %type <input_list> input_list 
 %type <input> input
-
+%type <type_list> type_list
 %%
 
 program:
@@ -222,7 +223,7 @@ fn_decl:
 
 param_list:
     IDENTIFIER COLON type { $$ = new List<IdentifierType>({new IdentifierType($1, $3)}); }
-    | IDENTIFIER COMMA type param_list { $4->add(new IdentifierType($1, $3)); $$ = $4; }
+    | IDENTIFIER COLON type COMMA param_list { $5->add(new IdentifierType($1, $3)); $$ = $5; }
     | { $$ = new List<IdentifierType>(); }
     ;
 
@@ -233,7 +234,13 @@ return_stmt:
 
 type: 
     type_identifier 
-    | type_identifier LBRACKET RBRACKET { $$ = new ArrayType($1); }
+    | LPAREN type_list RPAREN type { $$ = new FunctionType(std::move($2->items), $4); }
+    | type LBRACKET RBRACKET { $$ = new ArrayType($1); }
+    ;
+
+type_list:
+    type { $$ = new List<Type>({$1}); }
+    | type COMMA type_list { $3->add($1); $$ = $3; }
     ;
 
 type_identifier:
@@ -255,11 +262,17 @@ block:
     ; 
 
 expr:
-    assignment
+    lambda { $$ = $1; }
+    ;
+
+lambda:
+    LPAREN param_list RPAREN TYPE_ARROW type COLON expr { $$ = new LambdaExpr(std::move($2->items), $5, $7); }
+    | assignment
     ;
 
 assignment:
     IDENTIFIER EQUAL expr { $$ = new AssignExpr($1, $3); }
+    | IDENTIFIER LBRACKET expr RBRACKET EQUAL expr { $$ = new ArrayAssignExpr($1, $3, $6); }
     | ternary
     ;
 
@@ -318,6 +331,9 @@ unary:
 
 call:
     IDENTIFIER LPAREN arg_list RPAREN { $$ = new CallExpr($1, std::move($3->items)); }
+    | call LPAREN arg_list RPAREN { $$ = new CallExpr(dynamic_cast<CallExpr*>($1)->identifier, std::move($3->items)); }
+    | IDENTIFIER LBRACKET expr RBRACKET { $$ = new ArrayAccessExpr($1, $3); }
+    | call LBRACKET expr RBRACKET { $$ = new ArrayAccessExpr(dynamic_cast<ArrayAccessExpr*>($1)->identifier, $3); }
     | primary
     ;
 

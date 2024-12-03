@@ -1,32 +1,10 @@
 input foobar: int = 3 # needs to happen
 input shoebar: string
 
-if true:
-    1 + 1
-else:
-    2 + 2
-
-1 + 1
-    1 + 1
-        1 + 1
-        let a: int = 3
-        a = 2
-        let b: int = 3
-        let c: float = true ? 1 : 3
-
-        fun foobar() -> int:
-            1 + 1
-            return
-
 fun shoebar() -> string: # TODO: fix type checking
     return 3 
 
 shoebar()
-
-if true:
-    1 + 1
-else:
-    2 + 2
 
 for x in [1, 2, 3, 4]:
     x
@@ -36,8 +14,32 @@ while true:
     break
     continue
 
+let x: int[] = [1,2,3,4,5,6]
+print("hello world")
+print(x[1])
 
-let x: int[] = [1,2]
+fun add(first: int, second: int) -> int:
+    print("running add function")
+    return first + second
+
+print(add(1, 2))
+print(x)
+
+let function: (int, int)int = (first: int, second: int) -> int: first + second
+
+fun map(arr: int[], fn: (int)int) -> int[]:
+    let newArr: int[] = []
+    let count: int = 0
+    for num in arr:
+        newArr[count] = fn(num)
+        count = count + 1
+    
+    return newArr
+
+let newArr: int[] = map(x, (i: int) -> int: i * 2)
+
+for i in newArr:
+    print(i)
 
 AND:
     behavior()

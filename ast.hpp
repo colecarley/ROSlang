@@ -7,6 +7,7 @@
 
 // expr nodes
 struct Expr;
+struct LambdaExpr;
 struct AssignExpr;
 struct TernaryExpr;
 struct BinaryExpr;
@@ -54,6 +55,7 @@ struct Input;
 struct Type;
 struct PrimitiveType;
 struct ArrayType;
+struct FunctionType;
 
 // helper structs
 template <typename T>
@@ -119,6 +121,28 @@ struct Expr : ASTNode
     virtual ~Expr() {}
 };
 
+struct LambdaExpr : Expr
+{
+    std::vector<std::unique_ptr<IdentifierType>> params;
+    std::unique_ptr<Type> return_type;
+    std::unique_ptr<Expr> expr;
+
+    LambdaExpr(std::vector<IdentifierType *> params, Type *return_type, Expr *expr) : return_type(return_type), expr(expr)
+    {
+        for (auto &param : params)
+        {
+            this->params.push_back(std::unique_ptr<IdentifierType>(param));
+        }
+    }
+    LambdaExpr(std::vector<std::unique_ptr<IdentifierType>> params, std::unique_ptr<Type> return_type, std::unique_ptr<Expr> expr) : params(std::move(params)), return_type(std::move(return_type)), expr(std::move(expr)) {}
+    LambdaExpr(std::vector<std::unique_ptr<IdentifierType>> params, Type *return_type, Expr *expr) : return_type(return_type), expr(expr), params(std::move(params)) {}
+
+    void accept(Visitor *v) override
+    {
+        v->visit(this);
+    }
+};
+
 struct AssignExpr : Expr
 {
     std::string identifier;
@@ -126,6 +150,21 @@ struct AssignExpr : Expr
 
     AssignExpr(std::string identifier, Expr *value) : identifier(identifier), value(value) {}
     AssignExpr(std::string identifier, std::unique_ptr<Expr> value) : identifier(identifier), value(std::move(value)) {}
+
+    void accept(Visitor *v) override
+    {
+        v->visit(this);
+    }
+};
+
+struct ArrayAssignExpr : Expr
+{
+    std::string identifier;
+    std::unique_ptr<Expr> index;
+    std::unique_ptr<Expr> value;
+
+    ArrayAssignExpr(std::string identifier, Expr *index, Expr *value) : identifier(identifier), index(index), value(value) {}
+    ArrayAssignExpr(std::string identifier, std::unique_ptr<Expr> index, std::unique_ptr<Expr> value) : identifier(identifier), index(std::move(index)), value(std::move(value)) {}
 
     void accept(Visitor *v) override
     {
@@ -190,6 +229,20 @@ struct CallExpr : Expr
         }
     }
     CallExpr(std::string identifier, std::vector<std::unique_ptr<Expr>> args) : identifier(identifier), args(std::move(args)) {}
+
+    void accept(Visitor *v) override
+    {
+        v->visit(this);
+    }
+};
+
+struct ArrayAccessExpr : Expr
+{
+    std::string identifier;
+    std::unique_ptr<Expr> index;
+
+    ArrayAccessExpr(std::string identifier, Expr *index) : identifier(identifier), index(index) {}
+    ArrayAccessExpr(std::string identifier, std::unique_ptr<Expr> index) : identifier(identifier), index(std::move(index)) {}
 
     void accept(Visitor *v) override
     {
@@ -477,6 +530,25 @@ struct ArrayType : Type
 
     ArrayType(Type *type) : type(type) {}
     ArrayType(std::unique_ptr<Type> type) : type(std::move(type)) {}
+};
+
+struct FunctionType : Type
+{
+    std::vector<std::unique_ptr<Type>> params;
+    std::unique_ptr<Type> return_type;
+
+    FunctionType(std::vector<Type *> params, Type *return_type)
+    {
+        for (auto &param : params)
+        {
+            this->params.push_back(std::unique_ptr<Type>(param));
+        }
+        this->return_type = std::unique_ptr<Type>(return_type);
+    }
+    FunctionType(std::vector<std::unique_ptr<Type>> params, Type *return_type) : params(std::move(params))
+    {
+        this->return_type = std::unique_ptr<Type>(return_type);
+    }
 };
 
 // tree nodes

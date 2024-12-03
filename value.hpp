@@ -4,6 +4,8 @@
 #include <vector>
 #include "ast.hpp"
 #include "exceptions/return.hpp"
+#include "callable.hpp"
+#include "array.hpp"
 
 enum MyType
 {
@@ -14,28 +16,6 @@ enum MyType
     MYNONE,
     MYFUNCTION,
     MYARRAY,
-};
-
-struct Interpreter;
-struct Value;
-struct Callable
-{
-    std::unique_ptr<FnDecl> fn_decl;
-
-    void call(Interpreter *interpreter, std::vector<Value> args);
-
-    Callable(FnDecl *fn_decl) : fn_decl(fn_decl) {}
-};
-
-struct Array
-{
-    std::vector<Value> elements;
-
-    Array(std::vector<Value> elements) : elements(elements) {}
-
-    Value operator[](int index);
-
-    Value operator[](Value index);
 };
 
 struct Value
