@@ -1,6 +1,10 @@
 #pragma once
 
 #include "ast.hpp"
+#include <unistd.h>
+#include <limits.h> // For PATH_MAX
+
+#include <fstream>
 #include <vector>
 #include <unordered_map>
 #include <map>
@@ -13,6 +17,9 @@
 #include "standard_lib.hpp"
 #include "value.hpp"
 #include "callable.hpp"
+#include "parser.hpp"
+
+void ros_parse(Program **root, const char *source);
 
 struct Interpreter : Visitor
 {
@@ -33,7 +40,42 @@ struct Interpreter : Visitor
     {
         for (auto &input : program->inputs)
         {
+            if (dynamic_cast<InputDefault *>(input.get()))
+            {
+                auto default_input = dynamic_cast<InputDefault *>(input.get());
+                default_input->value->accept(this);
+                env.set(input->identifier, stack.pop());
+            }
+            else
+            {
+                input->accept(this);
+            }
+        }
+
+        for (int i = 0; i < program->stmts.size(); i++)
+        {
+            auto &stmt = program->stmts[program->stmts.size() - 1 - i];
+            stmt->accept(this);
+        }
+
+        program->treeNode->accept(this);
+
+        for (int i = 0; i < node_stack.stack.size(); i++)
+        {
+            this->roots.push_back(std::move(node_stack.pop()));
+        }
+    }
+
+    void evaluate(Program *program, std::vector<Value> inputs)
+    {
+        for (auto &input : program->inputs)
+        {
             input->accept(this);
+        }
+
+        for (int i = 0; i < inputs.size(); i++)
+        {
+            env.set(program->inputs[i]->identifier, inputs[i]);
         }
 
         for (int i = 0; i < program->stmts.size(); i++)
@@ -559,6 +601,53 @@ struct Interpreter : Visitor
 
         auto behavior_node = std::shared_ptr<DHTT::Node>(new DHTT::Behavior(node->identifier, args));
         node_stack.push(std::move(behavior_node));
+    }
+
+    virtual void visit(AtLoadNode *at_load) override
+    {
+        std::vector<Value> args;
+        for (auto it = at_load->args.rbegin(); it != at_load->args.rend(); ++it)
+        {
+            it->get()->accept(this);
+            args.push_back(stack.pop());
+        }
+
+        if (args.size() < 1 || args[0].type != MyType::MYSTRING)
+        {
+            std::cerr << "Expected string value as first argument to load" << std::endl;
+            exit(1);
+        }
+
+        std::string filename = args[0].string_value.substr(1, args[0].string_value.length() - 2);
+
+        std::ifstream file(filename);
+        if (!file.is_open())
+        {
+            std::cerr << "Could not open file: " << filename << std::endl;
+            exit(1);
+        }
+
+        std::string source;
+        std::string line;
+        while (getline(file, line))
+        {
+            source += line + '\n';
+        }
+
+        file.close();
+
+        Program *root = nullptr;
+        ros_parse(&root, source.c_str());
+
+        Interpreter interpreter;
+        interpreter.evaluate(root, std::vector<Value>(args.begin() + 1, args.end()));
+
+        auto tree = interpreter.roots;
+
+        for (auto &child : tree)
+        {
+            node_stack.push(std::move(child));
+        }
     }
 
     virtual void visit(AtIfNode *at_if) override

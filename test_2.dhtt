@@ -1,0 +1,7 @@
+input x: int = 3
+
+AND:
+    behavior()
+    OR: 
+        behavior()
+        behavior()

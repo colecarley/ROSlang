@@ -44,6 +44,8 @@ for i in newArr:
 AND:
     behavior()
     behavior()
+    @load("/Users/colecarley/src/ROSlang/test_2.dhtt", 1)
+    @load("/Users/colecarley/src/ROSlang/test_2.dhtt", 2)
     OR:
         behavior()
         behavior()
@@ -61,3 +63,4 @@ AND:
             behavior()
         @else:
             behavior()
+    

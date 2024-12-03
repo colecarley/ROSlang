@@ -643,6 +643,18 @@ struct PseudoNode : TreeNode
     virtual ~PseudoNode() {}
 };
 
+struct AtLoadNode : PseudoNode
+{
+    std::vector<std::unique_ptr<Expr>> args;
+
+    AtLoadNode(std::vector<std::unique_ptr<Expr>> args) : args(std::move(args)) {}
+
+    void accept(Visitor *v) override
+    {
+        v->visit(this);
+    }
+};
+
 struct AtIfNode : PseudoNode
 {
     std::unique_ptr<Expr> condition;

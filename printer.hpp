@@ -248,6 +248,16 @@ struct Printer : Visitor
         }
     }
 
+    virtual void visit(AtLoadNode *at_load) override
+    {
+        std::cout << "AtLoadNode\n";
+
+        for (auto &arg : at_load->args)
+        {
+            arg->accept(this);
+        }
+    }
+
     virtual void visit(AtIfNode *at_if) override
     {
         std::cout << "AtIfNode\n";

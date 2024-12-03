@@ -1,0 +1,6 @@
+input level: int = 0
+
+@if level <= 5:
+    AND:
+        behavior()
+        @load("/Users/colecarley/src/ROSlang/recursive.dhtt", level + 1)

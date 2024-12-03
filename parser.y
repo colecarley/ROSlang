@@ -57,6 +57,7 @@
 %token AT_IF
 %token AT_ELSE
 %token AT_FOR
+%token AT_LOAD
 
 %token AND
 %token THEN
@@ -97,7 +98,7 @@
 %token VOID;
 %token NONE;
 
-%type <tree_node> tree and_node or_node then_node behavior_node pseudo_node at_if_stmt at_if_else_stmt at_for_stmt
+%type <tree_node> tree and_node or_node then_node behavior_node pseudo_node at_if_stmt at_if_else_stmt at_for_stmt at_load_stmt
 %type <tree_node_list> children node_list
 %type <expr_list> arg_list
 %type <expr> expr or and equality comparison term factor exponent unary call primary array assignment ternary lambda
@@ -118,11 +119,11 @@ program:
 input_list:
     input_list input { $1->add($2); $$ = $1; }
     | input { $$ = new List<Input>({$1}); }
-    | 
+    | { $$ = new List<Input>(); }
     ;
 
 input:
-    INPUT IDENTIFIER COLON type EQUAL expr NEW_LINE { $$ = new InputDefault($2, $4, $6); }
+    INPUT IDENTIFIER COLON type EQUAL expr NEW_LINE { std::cout << "found default" << std::endl; $$ = new InputDefault($2, $4, $6); }
     | INPUT IDENTIFIER COLON type NEW_LINE { $$ = new Input($2, $4); }
     ;
 
@@ -153,6 +154,11 @@ pseudo_node:
     at_if_stmt
     | at_if_else_stmt
     | at_for_stmt
+    | at_load_stmt 
+    ;
+
+at_load_stmt:
+    AT_LOAD LPAREN arg_list RPAREN NEW_LINE { $$ = new AtLoadNode(std::move($3->items)); }
     ;
 
 at_if_stmt:
@@ -181,6 +187,7 @@ node_list:
 stmt_list:
     stmt { $$ = new List<Stmt>({$1}); }
     | stmt stmt_list { $2->add($1); $$ = $2; }
+    | { $$ = new List<Stmt>(); }
     ;
 
 stmt:

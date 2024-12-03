@@ -4,9 +4,9 @@
 void print(std::vector<Value> vals)
 {
 
-    for (auto val : vals)
+    for (auto it = vals.rbegin(); it != vals.rend(); it++)
     {
-        std::cout << val.to_string() << " ";
+        std::cout << it->to_string() << " ";
     }
 
     std::cout << std::endl;

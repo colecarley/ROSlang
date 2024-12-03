@@ -41,6 +41,7 @@ struct OrNode;
 struct ThenNode;
 struct BehaviorNode;
 struct PseudoNode;
+struct AtLoadNode;
 struct AtIfNode;
 struct AtIfElseNode;
 struct AtForNode;
@@ -86,6 +87,7 @@ struct Visitor
     virtual void visit(BehaviorNode *) = 0;
     virtual void visit(InputDefault *) = 0;
     virtual void visit(Input *) = 0;
+    virtual void visit(AtLoadNode *) = 0;
     virtual void visit(AtIfNode *) = 0;
     virtual void visit(AtIfElseNode *) = 0;
     virtual void visit(AtForNode *) = 0;

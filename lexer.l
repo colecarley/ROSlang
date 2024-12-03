@@ -83,6 +83,7 @@ continue  { return CONTINUE; }
 @if       { return AT_IF; }
 @else     { return AT_ELSE; }
 @for      { return AT_FOR; }
+@load     { return AT_LOAD; }
 
 not        { return NOT; }  
 

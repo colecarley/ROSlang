@@ -2,7 +2,6 @@
  * TOOD: finish writing input
  * TOOD: write a load node
  * TODO: write a function call node
- * TOOD: implement lambda functions
  * TODO: figure out leading newlines
  */
 
