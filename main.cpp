@@ -1,7 +1,4 @@
 /**
- * TOOD: finish writing input
- * TOOD: write a load node
- * TODO: write a function call node
  * TODO: figure out leading newlines
  */
 

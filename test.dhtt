@@ -1,4 +1,4 @@
-input foobar: int = 3 # needs to happen
+input foobar: int = 3
 input shoebar: string
 
 fun shoebar() -> string: # TODO: fix type checking
