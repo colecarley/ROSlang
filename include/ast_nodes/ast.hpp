@@ -2,7 +2,7 @@
 
 #include <string>
 #include <vector>
-#include "visitor.hpp"
+#include "visitors/visitor.hpp"
 #include <memory>
 
 // expr nodes

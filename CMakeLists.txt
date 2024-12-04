@@ -10,22 +10,16 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 find_package(BISON REQUIRED)
 if (BISON_FOUND)
-    BISON_TARGET(Parser parser.y ${CMAKE_CURRENT_BINARY_DIR}/../parser.cpp)
-
-    include_directories(${CMAKE_CURRENT_BINARY_DIR})
+    BISON_TARGET(Parser ${PROJECT_SOURCE_DIR}/src/parser.y ${PROJECT_SOURCE_DIR}/src/parser.cpp DEFINES_FILE ${PROJECT_SOURCE_DIR}/include/parser.hpp)
 
 endif()
 
 find_package(FLEX REQUIRED)
-
 if (FLEX_FOUND)
-    FLEX_TARGET(Lexer lexer.l ${CMAKE_CURRENT_BINARY_DIR}/../lexer.cpp)
-
-    include_directories(${CMAKE_CURRENT_BINARY_DIR})
+    FLEX_TARGET(Lexer ${PROJECT_SOURCE_DIR}/src/lexer.l ${PROJECT_SOURCE_DIR}/src/lexer.cpp)
 endif()
 
-include_directories(${PROJECT_SOURCE_DIR}/*.hpp)
+include_directories(${PROJECT_SOURCE_DIR}/include)
+file(GLOB_RECURSE SOURCES ${PROJECT_SOURCE_DIR}/src/*.cpp)
 
-file(GLOB SOURCES ${PROJECT_SOURCE_DIR}/*.cpp)
-
-add_executable(roslang ${SOURCES} ${BISON_Parser_OUTPUTS} ${FLEX_Lexer_OUTPUTS})
+add_executable(roslang main.cpp ${SOURCES} ${BISON_Parser_OUTPUTS} ${FLEX_Lexer_OUTPUTS})

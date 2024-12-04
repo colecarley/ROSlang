@@ -1,5 +1,5 @@
-#include "callable.hpp"
-#include "interpreter.hpp"
+#include "value/callable.hpp"
+#include "visitors/interpreter.hpp"
 
 void Callable::call(Interpreter *interpreter, std::vector<Value> args)
 {

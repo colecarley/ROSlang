@@ -2,10 +2,10 @@
 
 #include <memory>
 #include <vector>
-#include "ast.hpp"
+#include "ast_nodes/ast.hpp"
 #include "exceptions/return.hpp"
-#include "callable.hpp"
-#include "array.hpp"
+#include "value/callable.hpp"
+#include "value/array.hpp"
 
 enum MyType
 {

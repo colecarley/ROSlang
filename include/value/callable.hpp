@@ -1,7 +1,7 @@
 #pragma once
 
 #include <memory>
-#include "ast.hpp"
+#include "ast_nodes/ast.hpp"
 
 struct Interpreter;
 struct Value;

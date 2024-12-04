@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ast.hpp"
+#include "ast_nodes/ast.hpp"
 #include <unistd.h>
 #include <limits.h> // For PATH_MAX
 
@@ -13,10 +13,10 @@
 #include "exceptions/index.hpp"
 #include "stack.hpp"
 #include "environment.hpp"
-#include "array.hpp"
+#include "value/array.hpp"
 #include "standard_lib.hpp"
-#include "value.hpp"
-#include "callable.hpp"
+#include "value/value.hpp"
+#include "value/callable.hpp"
 #include "parser.hpp"
 
 void ros_parse(Program **root, const char *source);

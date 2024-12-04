@@ -1,5 +1,6 @@
 #pragma once
-#include "ast.hpp"
+#include "ast_nodes/ast.hpp"
+#include "visitor.hpp"
 
 struct Printer : Visitor
 {

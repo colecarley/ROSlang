@@ -5,11 +5,11 @@
 #include <iostream>
 #include <fstream>
 #include <algorithm>
-#include "ast.hpp"
+#include "ast_nodes/ast.hpp"
 #include "parser.hpp"
-#include "visitor.hpp"
-#include "printer.hpp"
-#include "interpreter.hpp"
+#include "visitors/visitor.hpp"
+#include "visitors/printer.hpp"
+#include "visitors/interpreter.hpp"
 #include "dhtt.hpp"
 
 void ros_parse(Program **root, const char *source);

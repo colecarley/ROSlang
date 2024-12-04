@@ -1,5 +1,5 @@
 %{
-    #include "ast.hpp"
+    #include "ast_nodes/ast.hpp"
     #include <iostream>
     #include <string>
     #include <memory>
