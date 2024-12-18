@@ -2,4 +2,8 @@
 #include <vector>
 
 struct Value;
-void print(std::vector<Value> vals);
+namespace StandardLib
+{
+    void print(std::vector<Value> vals);
+    Value range(std::vector<Value> args);
+}

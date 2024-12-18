@@ -20,6 +20,7 @@ enum MyType
 
 struct Value
 {
+    // TODO: turn this into a variant
     union
     {
         int int_value;

@@ -176,9 +176,11 @@ struct Interpreter : Visitor
 
         if (iterable.type != MyType::MYSTRING && iterable.type != MyType::MYARRAY)
         {
-            std::cerr << "Expected string value in for statement iterable" << std::endl;
+            std::cerr << "Expected string or array value in for statement iterable" << std::endl;
             exit(1);
         }
+
+        std::cout << "ARRAY HAS: " << iterable.array->elements.size() << std::endl;
 
         if (iterable.type == MyType::MYARRAY)
         {
@@ -432,28 +434,30 @@ struct Interpreter : Visitor
 
     virtual void visit(CallExpr *expr) override
     {
+
+        std::vector<Value> args;
+        for (auto it = expr->args.rbegin(); it != expr->args.rend(); ++it)
+        {
+            it->get()->accept(this);
+            args.push_back(stack.pop());
+        }
+
         if (!env.contains(expr->identifier))
         {
             if (expr->identifier == "print")
             {
-
-                auto values = std::vector<Value>();
-                for (auto &arg : expr->args)
-                {
-                    arg->accept(this);
-                    values.push_back(stack.pop());
-                }
-
-                print(values);
-                return;
+                StandardLib::print(args);
             }
-        }
-
-        std::vector<Value> args;
-        for (auto &arg : expr->args)
-        {
-            arg->accept(this);
-            args.push_back(stack.pop());
+            else if (expr->identifier == "range")
+            {
+                auto result = StandardLib::range(args);
+                stack.push(result);
+            }
+            else
+            {
+                throw std::runtime_error("Function " + expr->identifier + " not defined");
+            }
+            return;
         }
 
         auto callable = env.get(expr->identifier).callable;
@@ -618,12 +622,10 @@ struct Interpreter : Visitor
             exit(1);
         }
 
-        std::string filename = args[0].string_value.substr(1, args[0].string_value.length() - 2);
-
-        std::ifstream file(filename);
+        std::ifstream file(args[0].string_value);
         if (!file.is_open())
         {
-            std::cerr << "Could not open file: " << filename << std::endl;
+            std::cerr << "Could not open file: " << args[0].string_value << std::endl;
             exit(1);
         }
 

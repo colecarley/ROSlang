@@ -53,7 +53,13 @@ int open_count = 0;
                 return INT_LITERAL; }
 [0-9]+\.[0-9]+ { yylval.floatval = atof(yytext); return FLOAT_LITERAL; }
 
-"\"".*"\"" { yylval.strval = strdup(yytext); return STRING_LITERAL; }
+"\"".*"\"" { 
+    int len = strlen(yytext);
+    memcpy(yytext, yytext + 1, len - 1);
+    yylval.strval = strndup(yytext, len - 2); 
+    strcpy(yytext,"");
+    return STRING_LITERAL; 
+    }
 
 true      { yylval.boolval = !strcmp(yytext, "true"); return BOOL_LITERAL; }
 false      { yylval.boolval = !strcmp(yytext, "true"); return BOOL_LITERAL; }

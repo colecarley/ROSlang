@@ -1,45 +1,12 @@
-input foobar: int = 3
-input shoebar: string
+print("this is before")
 
-fun shoebar() -> string: # TODO: fix type checking
-    return 3 
 
-shoebar()
+print("hello there")
 
-for x in [1, 2, 3, 4]:
-    x
-    break
+for x in range(12):
+    print(x)
 
-while true:
-    break
-    continue
-
-let x: int[] = [1,2,3,4,5,6]
-print("hello world")
-print(x[1])
-
-fun add(first: int, second: int) -> int:
-    print("running add function")
-    return first + second
-
-print(add(1, 2))
-print(x)
-
-let function: (int, int)int = (first: int, second: int) -> int: first + second
-
-fun map(arr: int[], fn: (int)int) -> int[]:
-    let newArr: int[] = []
-    let count: int = 0
-    for num in arr:
-        newArr[count] = fn(num)
-        count = count + 1
-    
-    return newArr
-
-let newArr: int[] = map(x, (i: int) -> int: i * 2)
-
-for i in newArr:
-    print(i)
+print("this is after")
 
 AND:
     behavior()
@@ -54,13 +21,3 @@ AND:
         behavior()
         behavior()
         behavior()
-    @for i in x:
-        behavior()
-        behavior()
-        behavior()
-        @if true:
-            behavior()
-            behavior()
-        @else:
-            behavior()
-    

@@ -123,7 +123,7 @@ input_list:
     ;
 
 input:
-    INPUT IDENTIFIER COLON type EQUAL expr NEW_LINE { std::cout << "found default" << std::endl; $$ = new InputDefault($2, $4, $6); }
+    INPUT IDENTIFIER COLON type EQUAL expr NEW_LINE { $$ = new InputDefault($2, $4, $6); }
     | INPUT IDENTIFIER COLON type NEW_LINE { $$ = new Input($2, $4); }
     ;
 
