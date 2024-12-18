@@ -180,8 +180,6 @@ struct Interpreter : Visitor
             exit(1);
         }
 
-        std::cout << "ARRAY HAS: " << iterable.array->elements.size() << std::endl;
-
         if (iterable.type == MyType::MYARRAY)
         {
             for (auto &element : iterable.array->elements)
